@@ -11,7 +11,14 @@ export default function EditProduct() {
   const dispatch = useDispatch();
   const { state } = useLocation();
 
-  const { productName, price, description, category, image, inventoryQuantity } = state;
+  const {
+    productName,
+    price,
+    description,
+    category,
+    image,
+    inventoryQuantity,
+  } = state;
   let categoryId = category.categoryId;
   console.log(category.categoryId);
 
@@ -24,16 +31,23 @@ export default function EditProduct() {
     categoryId,
     inventoryQuantity,
   };
-
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   const editProduct = async (formData) => {
     await toast.success("The product has been successfully changed!");
-    console.log('form data', formData)
+    console.log("form data", formData);
     await dispatch(editProductApi(formData, navigate, idProduct));
   };
   return (
     <div className="container" style={{ padding: "0px 60px" }}>
-      <h3 className=""> Edit Product</h3>
-      <FormProduct initialData={initialValues} submitForm={editProduct} />
+      <button className="btn btn-outline-dark mb-3" onClick={handleGoBack}>
+        Go back
+      </button>
+      <div className="border border-black p-2 rounded mb-3">
+        <h3 className=""> Edit Product</h3>
+        <FormProduct initialData={initialValues} submitForm={editProduct} />
+      </div>
     </div>
   );
 }

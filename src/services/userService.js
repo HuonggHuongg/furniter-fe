@@ -1,14 +1,23 @@
 import requestApi from "../utils/requestApi";
 
-export const editProfileService = (username,userEdit,token) => {
-  return requestApi({
-    method: "patch",
-    url: `user/${username}`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    data:userEdit
-  });
+export const editProfileService = async(username,userEdit,token,avatar) => {
+ console.log(avatar)
+  try {
+    const respone = await requestApi({
+      method: "patch",
+      url: `user`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS' 
+      },
+      data:{...userEdit,avatar:avatar}
+    });
+    return respone.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const uploadAvatarService = (idUser,formData) => {

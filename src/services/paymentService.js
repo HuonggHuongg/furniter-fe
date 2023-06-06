@@ -14,10 +14,27 @@ export const getPaymentService = async (totalAmount, orderId) => {
       }).then(data => {
         return data
       }).catch(error => {
-        console.error('NOOOO');
+        console.log(error);
       })
       return respone;
     } catch (error) {
       return error;
+    }
+  };
+
+  export const sendEmailPaymentSuccessService = async (dataSignup) => {
+    try {
+      return requestApi({
+        method: "post",
+        url: "email/payment-success",
+        data: {
+          "email":`${dataSignup.email}`,
+          "subject":"Successful payment!!",
+          "username":`${dataSignup.name}`,
+        },
+        
+      });
+    } catch (error) {
+      throw error;
     }
   };

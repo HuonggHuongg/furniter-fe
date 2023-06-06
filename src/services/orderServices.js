@@ -24,12 +24,13 @@ export const createOrderService = async (dataCreateOrder) => {
 };
 
 export const addProductToOrderService = async (dataCart, idOrder) => {
+  console.log(dataCart)
   try {
     const respone = await requestApi({
       method: "post",
       url: `/order/${idOrder}/items`,
       data: {
-        productIds: dataCart.productIds,
+        productIds: dataCart,
       },
       headers: {
         Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,

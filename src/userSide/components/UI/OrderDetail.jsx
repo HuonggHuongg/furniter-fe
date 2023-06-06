@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Col, Container, Row } from "reactstrap";
 import { getDetailsOrderService } from "../../../services/orderServices";
 import "../../styles/order-detail.css";
@@ -9,12 +9,9 @@ import USDollar from "../../../utils/FormatMoney";
 
 export const OrderDetail = () => {
   const { id } = useParams();
-  const accessToken = JSON.parse(
-    localStorage.getItem("currentUserInfor")
-  ).accessToken;
-  // const [cartItems, setCartItems] = useState([]);
   const [date, setDate] = useState();
   const [orderArray, setOrderArray] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGetAllOrderAnUserApi = async () => {
@@ -23,24 +20,15 @@ export const OrderDetail = () => {
     };
     fetchGetAllOrderAnUserApi();
   }, [id]);
- 
-  // useEffect(() => {
-  //   const dataOrderDetail = {
-  //     id,
-  //     accessToken,
-  //   };
-  //   const fetchGetDetailOrderApi = async () => {
-  //     const respone = await getDetailsOrderService(dataOrderDetail);
-  //     console.log(respone.data);
-  //     setCartItems(respone.data);
-  //     const date = new Date(respone.data[0].Order.createdAt);
-  //     setDate(date);
-  //   };
 
-  //   fetchGetDetailOrderApi();
-  // }, []);
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   return (
     <>
+      <button className="btn btn-outline-dark mb-3" onClick={handleGoBack}>
+        Go back
+      </button>
       <Container className="table__order">
         <h5 className="title__order--item">
           {" "}
@@ -66,19 +54,19 @@ export const OrderDetail = () => {
                   : 0}
               </tbody>
             </table>
-            {orderArray.length > 0
-              ?<div className="col-6 ">
-              <div className="info_price--order">
-                <h4>Totalize</h4>
-                <p className="mt-2">
-                  Subtotal({orderArray.length} product) :{" "}
-                  {USDollar.format(orderArray[0].orderUser.totalOrder)}
-                </p>
+            {orderArray.length > 0 ? (
+              <div className="col-6 ">
+                <div className="info_price--order">
+                  <h4>Totalize</h4>
+                  <p className="mt-2">
+                    Subtotal({orderArray.length} product) :{" "}
+                    {USDollar.format(orderArray[0].orderUser.totalOrder)}
+                  </p>
+                </div>
               </div>
-            </div>
-            : 0}
-             
-        
+            ) : (
+              0
+            )}
           </Col>
         </Row>
       </Container>

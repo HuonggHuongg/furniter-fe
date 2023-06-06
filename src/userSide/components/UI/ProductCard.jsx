@@ -2,12 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Col } from "reactstrap";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-
-import productImg from "../../../assets/images/arm-chair-01.jpg";
 import "../../styles/product-card.css";
-import { useDispatch } from "react-redux";
-import { cartActions } from "../../../redux/slices/cartSlice";
 
 const ProductCard = (props) => {
   const { item } = props;

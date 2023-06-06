@@ -16,17 +16,34 @@ export const loginServices = async (dataLogin) => {
   }
 };
 
-// export const getCurrentUser = async (username,accessToken) => {
-//   try {
-//     const respone = await requestApi({
-//       method: "get", 
-//       url: `user/${username}`, 
-//       headers: {
-//         Authorization: "Bearer " + accessToken,
-//       },
-//     });
-//     return respone
-//   } catch (error) {
-//     return error
-//   }
-// }
+export const forgotPasswordService = async (dataForgotPass) => {
+  try {
+    const respone = await requestApi({
+      method: "post",
+      url: "user/forgot-password",
+      data: {
+        email: `${dataForgotPass.email}`,
+      },
+    });
+    return respone.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const resetPasswordService = async (dataResetPassword,email,token) => {
+  try {
+    const respone = await requestApi({
+      method: "post",
+      url: "user/reset-password",
+      data: {
+        email: `${email}`,
+        token: `${token}`,
+        resetPassword: `${dataResetPassword.password}`,
+      },
+    });
+    return respone.data;
+  } catch (error) {
+    throw error;
+  }
+};

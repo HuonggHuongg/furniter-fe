@@ -1,30 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  changeStatusProductApi,
-  getAllProductsApi,
-} from "../../../redux/slices/productSlice";
+import { useSelector } from "react-redux";
 import "./product.css";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { VND } from "../../../utils/convertVND";
-import { toast } from "react-toastify";
-
-// ['id', 'name', 'price', 'image', 'description', 'status_number', 'createdAt', 'updatedAt', 'category_id', 'Category']
-// https://mui.com/x/react-data-grid/column-definition/
 
 export default function Product() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const listProduct = useSelector((state) => state.product.products);
 
-  const changeStatusProduct = async (idProduct, status_number) => {
-    await toast.success("The status product has been successfully changed!");
-    await dispatch(changeStatusProductApi(idProduct, status_number));
-  };
+  console.log(listProduct);
 
   const columns = [
     {
@@ -55,7 +43,7 @@ export default function Product() {
       field: "price",
       headerName: "Price",
       width: 130,
-      type: "number",
+      // type: "number",
       valueFormatter: (params) => {
         return VND.format(params.value);
       },
@@ -63,14 +51,12 @@ export default function Product() {
 
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
-      field: "status_number",
-      headerName: "Status Product",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      width: 140,
+      field: "inventoryQuantity",
+      headerName: "Quantity",
+      width: 130,
       valueFormatter: (params) => {
-        const statusProduct = params.value ? "Stocking" : "Out of stock";
-        return statusProduct;
+        const inventoryQuantity = params.value;
+        return inventoryQuantity;
       },
     },
 
@@ -83,31 +69,9 @@ export default function Product() {
       filterable: false,
       renderCell: (params) => {
         const product = params.row;
-
+        console.log(product.inventoryQuantity);
         return (
           <>
-            {product.status_number ? (
-              <Button
-                variant="contained"
-                color="success"
-                onClick={() => {
-                  changeStatusProduct(product.productId, false);
-                }}
-              >
-                Out of stock
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                color="success"
-                onClick={() => {
-                  changeStatusProduct(product.productId, true);
-                }}
-              >
-                Stocking
-              </Button>
-            )}
-
             <Button
               variant="contained"
               color="warning"
@@ -147,7 +111,6 @@ export default function Product() {
           columns={columns}
           pageSize={10}
           rowsPerPageOptions={[5]}
-          checkboxSelection
           disableSelectionOnClick
           getRowId={(row) => row.productId}
         />

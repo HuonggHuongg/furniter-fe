@@ -38,8 +38,8 @@ const nav__links = [
 const Header = () => {
   const currentUserInfor = JSON.parse(localStorage.getItem("currentUserInfor"));
   const currentUser = currentUserInfor ? currentUserInfor.currentUser : null;
-  const userAvatar = currentUser ? currentUser.avatar : user_icon;
-  const userName = currentUser ? currentUser.user_name : "";
+  const userAvatar = currentUser?.avatar ? currentUser.avatar : user_icon;
+  const userName = currentUser ? currentUser.userName : "";
   const menuRef = useRef(null);
 
   // const totalQuantity = useSelector((state) => state.cart.totalQuantity);
@@ -56,7 +56,7 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
-  
+
   const handleLogout = () => {
     localStorage.clear();
     dispatch(LogoutApi());
@@ -81,38 +81,38 @@ const Header = () => {
             </Link>
             <div className="navigation" ref={menuRef} onClick={menuToggle}>
               <ul className="menu">
-                {currentUser&&nav__links.map((item, index) => {
-                  return (
-                    
-                    <li className="nav__item" key={index}>
-                      <NavLink
-                        to={item.path}
-                        className={(navClass) =>
-                          navClass.isActive ? "nav__active" : ""
-                        }
-                      >
-                        {item.display}
-                      </NavLink>
-                    </li>
-                    
-                  );
-                })}
-                 {currentUser===null&&nav__links.map((item, index) => {
-                  return (
-                    item.path!=='cart'?
-                    <li className="nav__item" key={index}>
-                      <NavLink
-                        to={item.path}
-                        className={(navClass) =>
-                          navClass.isActive ? "nav__active" : ""
-                        }
-                      >
-                        {item.display}
-                      </NavLink>
-                    </li>
-                    :<li style={{display:'none'}} key={index}></li>
-                  );
-                })}
+                {currentUser &&
+                  nav__links.map((item, index) => {
+                    return (
+                      <li className="nav__item" key={index}>
+                        <NavLink
+                          to={item.path}
+                          className={(navClass) =>
+                            navClass.isActive ? "nav__active" : ""
+                          }
+                        >
+                          {item.display}
+                        </NavLink>
+                      </li>
+                    );
+                  })}
+                {currentUser === null &&
+                  nav__links.map((item, index) => {
+                    return item.path !== "cart" ? (
+                      <li className="nav__item" key={index}>
+                        <NavLink
+                          to={item.path}
+                          className={(navClass) =>
+                            navClass.isActive ? "nav__active" : ""
+                          }
+                        >
+                          {item.display}
+                        </NavLink>
+                      </li>
+                    ) : (
+                      <li style={{ display: "none" }} key={index}></li>
+                    );
+                  })}
               </ul>
             </div>
 
@@ -129,13 +129,20 @@ const Header = () => {
                 <div>
                   <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                     <DropdownToggle className="bg-white border-0">
-                      <span>
-                        <motion.img
-                          whileTap={{ scale: 1.2 }}
-                          src={userAvatar}
-                          alt="userIcon"
-                        />
-                      </span>
+                      {currentUserInfor && (
+                        <span>
+                          <motion.img
+                            whileTap={{ scale: 1.2 }}
+                            src={userAvatar}
+                            alt="userIcon"
+                          />
+                        </span>
+                      )}
+                      {!currentUserInfor && (
+                        <span className="text-dark">
+                          <Link to={"/login"}>Login</Link>
+                        </span>
+                      )}
                     </DropdownToggle>
                     <DropdownMenu className="drop__menu">
                       {currentUser ? (
@@ -159,12 +166,13 @@ const Header = () => {
                           </DropdownItem>
                         </>
                       ) : (
-                        <DropdownItem
-                          className="drop__menu--item"
-                          onClick={handleClickLogin}
-                        >
-                          Login
-                        </DropdownItem>
+                        <></>
+                        // <DropdownItem
+                        //   className="drop__menu--item"
+                        //   onClick={handleClickLogin}
+                        // >
+                        //   Login
+                        // </DropdownItem>
                       )}
                     </DropdownMenu>
                   </Dropdown>

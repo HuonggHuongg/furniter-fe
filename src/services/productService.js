@@ -1,12 +1,11 @@
 import requestApi from "../utils/requestApi";
 
 
-const currentUserInfor = JSON.parse(localStorage.getItem("currentUserInfor"));
 export const getAllProductService = async () => {
   try {
     const respone = await requestApi({ 
       method: "get",
-      url: "product",
+      url: "product/findAll",
     });
     return respone;
   } catch (error) {
@@ -68,7 +67,7 @@ export const editProductService = (formData, id) => {
     url: `product/${id}`,
     method: "patch",
     data: {
-      "image": `${formData.productName}`,
+      "image": `${formData.image}`,
       productName: `${formData.productName}`,
       price: `${formData.price}`,
       description: `${formData.description}`,
@@ -82,15 +81,4 @@ export const editProductService = (formData, id) => {
       'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS' 
     },
   });
-};
-
-export const changeStatusProductService = (idProduct,status_number) => {
-  // return requestApi({
-  //   url: `product/change_status/${idProduct}`,
-  //   method: "put",
-  //   data: {status_number},
-  //   headers: {
-  //     Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
-  //   },
-  // });
 };

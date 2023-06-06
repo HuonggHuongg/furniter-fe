@@ -2,18 +2,35 @@ import requestApi from "../utils/requestApi";
 
 export const signupServices = async (dataSignup) => {
   try {
-    const respone = await requestApi({
+    return requestApi({
       method: "post",
       url: "user",
       data: {
-        user_name: `${dataSignup.name}`,
+        userName: `${dataSignup.name}`,
         email: `${dataSignup.email}`,
         password: `${dataSignup.password}`,
-        phone_number: `${dataSignup.phone}`
+        phoneNumber: `${dataSignup.phone}`
       },
+      
     });
-    return respone;
   } catch (error) {
-    return error;
+    throw error;
+  }
+};
+
+export const sendEmailSignUpSuccessService = async (dataSignup) => {
+  try {
+    return requestApi({
+      method: "post",
+      url: "email/sign-up-success",
+      data: {
+        "email":`${dataSignup.email}`,
+        "subject":"Sign up success!!",
+        "username":`${dataSignup.name}`,
+      },
+      
+    });
+  } catch (error) {
+    throw error;
   }
 };

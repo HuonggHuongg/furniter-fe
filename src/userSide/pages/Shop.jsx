@@ -5,9 +5,6 @@ import { Container, Row, Col } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import ProductsList from "../components/UI/ProductsList";
 import "../styles/shop.css";
-
-// import products from "../../assets/data/products";
-import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { getAllProductUserService } from "../../services/productService";

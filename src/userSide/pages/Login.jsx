@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Helmet from "../components/Helmet/Helmet";
-import { Container, Row, Col, Form, FormGroup,Progress } from "reactstrap";
+import { Container, Row, Col, Form, FormGroup, Progress } from "reactstrap";
 import { Link } from "react-router-dom";
 import "../styles/login.css";
 import { useFormik } from "formik";
@@ -13,20 +13,19 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const currentUserInfor = useSelector((state) => state.user)
+  const currentUserInfor = useSelector((state) => state.user);
   const messageLogin = currentUserInfor.message;
 
   useEffect(() => {
-    if(messageLogin === "Login successfully!") {
-      navigate("/home")
-      toast.success(messageLogin)
+    if (messageLogin === "Login successfully!") {
+      navigate("/home");
+      toast.success(messageLogin);
     }
 
-    if(messageLogin === "Login fail!") {
-      toast.error(messageLogin)
+    if (messageLogin === "Login fail!") {
+      toast.error(messageLogin);
     }
-    
-  }, [messageLogin, navigate])
+  }, [messageLogin, navigate]);
 
   const formik = useFormik({
     initialValues: {
@@ -35,7 +34,7 @@ const Login = () => {
     },
     validationSchema: Yup.object({
       name: Yup.string().required(),
-      password: Yup.string().required()
+      password: Yup.string().required(),
     }),
   });
 
@@ -54,7 +53,6 @@ const Login = () => {
     };
 
     if (data !== undefined) fectLoginApi();
-
   };
 
   return (
@@ -84,6 +82,9 @@ const Login = () => {
                   />
                 </FormGroup>
                 <button className="buy__btn auth__btn">Login</button>
+                <p>
+                  <Link to="/forgot-password">Forgotten password?</Link>
+                </p>
                 <p>
                   Don't have an account?
                   <Link to="/signup">Create an account</Link>

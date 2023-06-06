@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Helmet from "../components/Helmet/Helmet";
 import { Container, Row, Col, Form, FormGroup } from "reactstrap";
 import { Link } from "react-router-dom";
@@ -6,14 +6,18 @@ import "../styles/signup.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
-import { signupServices } from "../../services/signupService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { userLoginApi, userSignupApi } from "../../redux/slices/userSlice";
+import { userLoginApi } from "../../redux/slices/userSlice";
+import {
+  sendEmailSignUpSuccessService,
+  signupServices,
+} from "../../services/signupService";
 
 const Signup = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [errors, setErrors] = useState([]);
 
   const formik = useFormik({
     initialValues: {
@@ -44,25 +48,29 @@ const Signup = () => {
         .oneOf([Yup.ref("password"), null], "Password must match"),
       phone: Yup.string()
         .required("Required")
-        .matches(
-          /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-          "Must be a valid phone number"
-        ),
+        .matches(/^0[1-9][0-9]{8}$/, "Must be a valid phone number"),
     }),
     onSubmit: (values) => {
       const dataSignup = { ...values };
       delete dataSignup.confirmedPassword;
 
       const fectApiSignup = async () => {
-        await dispatch(userSignupApi(dataSignup));
-        const dataLogin = {
-          name: formik.values.name,
-          password: formik.values.password,
-        };
-        console.log(dataLogin);
-        await dispatch(userLoginApi(dataLogin));
-        toast.success("Signup successfully!");
-        navigate("/home");
+        signupServices(dataSignup)
+          .then((data) => {
+            sendEmailSignUpSuccessService(dataSignup);
+            const dataLogin = {
+              name: formik.values.name,
+              password: formik.values.password,
+            };
+            dispatch(userLoginApi(dataLogin));
+            toast.success("Signup successfully!");
+            navigate("/home");
+          })
+          .catch((error) => {
+            console.log(error);
+            setErrors(error?.response?.data);
+            console.log(error?.response?.data);
+          });
       };
 
       fectApiSignup();
@@ -77,6 +85,14 @@ const Signup = () => {
             <Col lg="6" className="m-auto text-center">
               <h3 className="fw-food fs-4">Sign up</h3>
               <Form className="auth__form" onSubmit={formik.handleSubmit}>
+                {errors?.length > 0 &&
+                  errors.map((error) => {
+                    return (
+                      <div className="text-left text-danger mb-2">
+                        * {error.defaultMessage}{" "}
+                      </div>
+                    );
+                  })}
                 <FormGroup className="form__group">
                   <input
                     type="text"
@@ -144,7 +160,7 @@ const Signup = () => {
                   Sign up
                 </button>
                 <p>
-                  Create an account
+                  Do you already have an account?
                   <Link to="/login">Login</Link>
                 </p>
               </Form>

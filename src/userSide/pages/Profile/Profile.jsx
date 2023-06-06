@@ -6,19 +6,19 @@ import "./profile.css"
 
 export default function Profile() {
   return (
-    <div className="container container__profile">
+    <div className="container container__profile m-5">
     <Row >
-        <Col xs={12} xl={8}>
+        <Col xs={12}>
           <GeneralInfoForm />
         </Col>
 
-        <Col xs={12} xl={4}>
+        {/* <Col xs={12} xl={4}>
           <Row>
             <Col xs={12}>
               <ProfileCardWidget />
             </Col>
           </Row>
-        </Col>
+        </Col> */}
       </Row></div>
   )
 }

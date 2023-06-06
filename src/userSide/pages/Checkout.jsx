@@ -5,23 +5,14 @@ import { Container, Row, Col, Form, FormGroup, Progress } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
 
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import "../styles/checkout.css";
 import { toast } from "react-toastify";
-import {
-  addProductToOrderService,
-  changeTotalOrderService,
-  createOrderService,
-} from "../../services/orderServices";
-import { useDispatch } from "react-redux";
-import { getAllCartItemApi } from "../../redux/slices/cartSlice";
-import { useNavigate } from "react-router-dom";
+import { createOrderService } from "../../services/orderServices";
 import { getPaymentService } from "../../services/paymentService";
 
 const Checkout = () => {
-  // const totalQty = useSelector((state) => state.cart.totalQuantity);
-  // const totalAmount = useSelector((state) => state.cart.totalAmount);
   const currentUser = JSON.parse(
     localStorage.getItem("currentUserInfor")
   ).currentUser;
@@ -30,19 +21,7 @@ const Checkout = () => {
   ).accessToken;
   const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [urlVnpay, setUrlVnpay] = useState();
-
   const cartItems = useSelector((state) => state.cart.cartItems);
-  console.log(cartItems);
-  let productIdList = [];
-  cartItems
-    ? cartItems.forEach((cartItem) => {
-        productIdList = [...productIdList, cartItem.product.productId];
-      })
-    : (productIdList = []);
-  console.log(productIdList);
 
   const totalAmount = cartItems
     ? cartItems.reduce((total, item) => total + Number(item.paymentCartItem), 0)
@@ -64,13 +43,20 @@ const Checkout = () => {
     }),
   });
 
-  const handleSubmit = () => {
+  const [selectedOption, setSelectedOption] = useState("");
+
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
     const errName = formik.values.name === "" ? "requirer" : formik.errors.name;
     const errNumber =
       formik.values.number === "" ? "requirer" : formik.errors.number;
     const errAddress =
       formik.values.address === "" ? "requirer" : formik.errors.address;
     const errCity = formik.values.city === "" ? "requirer" : formik.errors.city;
+    console.log(errName,errNumber,errAddress,errCity);
     if (errName || errNumber || errAddress || errCity) {
       toast.error("Invaild input order");
       return;
@@ -83,36 +69,27 @@ const Checkout = () => {
       accessToken,
     };
 
-    const dataCart = {
-      productIds: productIdList,
-    };
-
     const fetchCreateOrderApi = async () => {
       setLoading(true);
       const responeOrder = await createOrderService(dataCreateOrder);
-      await addProductToOrderService(dataCart, responeOrder.data.orderId);
-      await changeTotalOrderService(responeOrder.data.orderId);
-      console.log(responeOrder.data);
 
-      await dispatch(getAllCartItemApi());
       getPaymentService(totalAmount, responeOrder.data.orderId)
         .then((data) => {
-          console.log(data);
-          setUrlVnpay(data.data);
           window.location.href = data.data;
         })
-        .catch("NOT OKKKK");
-
-      // toast.success("Place an order sucessfully");
+        .catch((error) => console.log(error));
       setLoading(false);
-      // console.log(responeOrder.data);
-
-      // navigate("/order");
     };
 
-    fetchCreateOrderApi();
+    event.preventDefault();
+
+    if (selectedOption === "vnpay") {
+      fetchCreateOrderApi();
+    } else {
+      alert("Must choose a payment method before paying!!!");
+    }
   };
-  console.log(urlVnpay);
+
   return (
     <Helmet title="Checkout">
       {loading ? (
@@ -147,10 +124,10 @@ const Checkout = () => {
                 </FormGroup>
                 <FormGroup className="form__group">
                   <input
-                    type="number"
+                    type="text"
                     placeholder="Phone number"
                     id="number"
-                    value={formik.values.number}
+                    defaultValue={formik.values.number}
                     onChange={formik.handleChange}
                   />
                 </FormGroup>
@@ -159,7 +136,7 @@ const Checkout = () => {
                     type="text"
                     placeholder="Street address"
                     id="address"
-                    value={formik.values.address}
+                    defaultValue={formik.values.address}
                     onChange={formik.handleChange}
                   />
                 </FormGroup>
@@ -168,7 +145,7 @@ const Checkout = () => {
                     type="text"
                     placeholder="City"
                     id="city"
-                    value={formik.values.city}
+                    defaultValue={formik.values.city}
                     onChange={formik.handleChange}
                   />
                 </FormGroup>
@@ -189,12 +166,29 @@ const Checkout = () => {
                 <h4>
                   Total Cost: <span>${totalAmount}</span>
                 </h4>
-                <button
-                  className="buy__btn auth__btn w-100"
-                  onClick={handleSubmit}
-                >
-                  Place an order
-                </button>
+                <hr />
+                <div>
+                  <h4 className="mb-3">Payments</h4>
+                  <div className="ms-3 mb-4">
+                    <input
+                      type="radio"
+                      id="vnpay"
+                      value="vnpay"
+                      checked={selectedOption === "vnpay"}
+                      onChange={handleOptionChange}
+                    />
+                    <label htmlFor="vnpay" className="ms-2">
+                      VNPay
+                    </label>
+                  </div>
+                  <button
+                    type="submit"
+                    className="buy__btn auth__btn w-100"
+                    onClick={handleSubmit}
+                  >
+                    Payment
+                  </button>
+                </div>
               </div>
             </Col>
           </Row>

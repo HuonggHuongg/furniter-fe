@@ -87,7 +87,7 @@ export const editProfileApi = (userId, userEdit, token) => {
   return async (dispatch) => {
     const { data } = await editProfileService(userId, userEdit, token);
 
-    localStorage.setItem("currentUser", JSON.stringify(data));
+    localStorage.setItem("currentUserInfor", JSON.stringify(data));
   };
 };
 
@@ -96,7 +96,7 @@ export const uploadAvatarApi = (idUser, formData) => {
     try {
       await uploadAvatarService(idUser, formData);
       const { data } = await getInforUserService();
-      localStorage.setItem("currentUser", JSON.stringify(data));
+      localStorage.setItem("currentUserInfor", JSON.stringify(data));
     } catch (error) {
       console.log(error);
     }
