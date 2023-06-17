@@ -14,19 +14,20 @@ export const getProductDetailFeedBackService = async (id) => {
 
 export const postFeedBackService = async (id, dataFeedBack) => {
     try {
-        // const respone = await requestApi({
-        //     method: "post", 
-        //     url: "feedback", 
-        //     data: {
-        //         product_id: `${dataFeedBack.id}`,
-        //         comment_text: `${dataFeedBack.comment}`, 
-        //         rating: `${dataFeedBack.rating}`,
-        //     },
-        //     headers: {
-        //       Authorization: "Bearer " + `${dataFeedBack.accessToken}`,
-        //     },
-        // })
-        // return respone
+        const respone = await requestApi({
+            method: "post", 
+            url: `product/${id}/feedback`, 
+            data: {
+                commentText: `${dataFeedBack.comment}`, 
+                rating: `${dataFeedBack.rating}`,
+            },
+            headers: {
+              Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+        })
+        return respone
     } catch (error) {
         return error
     }

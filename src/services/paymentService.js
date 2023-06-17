@@ -27,12 +27,7 @@ export const getPaymentService = async (totalAmount, orderId) => {
       return requestApi({
         method: "post",
         url: "email/payment-success",
-        data: {
-          "email":`${dataSignup.email}`,
-          "subject":"Successful payment!!",
-          "username":`${dataSignup.name}`,
-        },
-        
+        data: dataSignup
       });
     } catch (error) {
       throw error;

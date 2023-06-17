@@ -63,7 +63,7 @@ function ResetPassword() {
 
         <FormGroup className="form__group">
           <input
-            type="text"
+            type="password"
             id="password"
             placeholder="Enter your password"
             value={formik.password}
@@ -75,7 +75,7 @@ function ResetPassword() {
         </FormGroup>
         <FormGroup className="form__group">
           <input
-            type="text"
+            type="password"
             id="confirmedPassword"
             placeholder="Confirm your passworld"
             value={formik.values.confirmedPassword}

@@ -7,6 +7,18 @@
     color: #fff;
 }
 
+.custom__pagination .page-link{
+    /* background: var(--primary-color) !important; */
+    color: var(--primary-color);
+    /* border-color: var(--primary-color); */
+}
+
+.custom__pagination .active .page-link{
+    background: var(--primary-color) !important;
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
 .filter__widget select:focus {
     outline: none !important;
 }

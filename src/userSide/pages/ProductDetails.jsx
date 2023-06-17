@@ -1,34 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Container, Row, Col, Spinner, Progress } from "reactstrap";
-import { useParams } from "react-router-dom";
-import { calcLength, motion } from "framer-motion";
+import { useNavigate, useParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addProductToCartApi,
-  cartActions,
   getAllCartItemApi,
 } from "../../redux/slices/cartSlice";
-
-import products from "../../assets/data/products";
+import user_icon from "../../assets/images/user-icon.png";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
-import ProductsList from "../components/UI/ProductsList";
 
 import "../styles/product-details.css";
 import { toast } from "react-toastify";
 import { getDetailService } from "../../services/productService";
-import {
-  getProductDetailFeedBackService,
-  postFeedBackService,
-} from "../../services/feedBackServices";
-import {
-  addProductToCartService,
-  getAllCartItemService,
-} from "../../services/cartServices";
+import { getProductDetailFeedBackService } from "../../services/feedBackServices";
+import { USD } from "../../utils/convertMoney";
 
-const RATINGS = [1, 2, 3, 4, 5];
 const ProductDetails = () => {
-  // const accessToken = JSON.parse(localStorage.getItem("currentUserInfor")).accessToken;
   const currentUser =
     JSON.parse(localStorage.getItem("currentUserInfor"))?.currentUser || null;
   const dispatch = useDispatch();
@@ -36,8 +25,8 @@ const ProductDetails = () => {
   const [countAddCart, setCountAddCart] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingCart, setLoadingCart] = useState(false);
-  const [productRecommend, setProductRecommend] = useState([]);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDetailProductApi = async () => {
@@ -57,160 +46,62 @@ const ProductDetails = () => {
       setLoading(false);
     };
     fetchDetailProductApi();
-  }, []);
+  }, [id]);
+  const [avgRatings, setAvgRatings] = useState();
+  const [star,setStar] = useState();
+  useEffect(() => {
+    console.log(productDetail?.feedBack);
+    const totalRating = productDetail?.feedBack
+      ? productDetail?.feedBack.reduce(
+          (total, item) => total + Number(item.rating),
+          0
+        )
+      : 0;
+    const avgRating =
+      productDetail?.feedBack?.length > 0
+        ? totalRating / productDetail?.feedBack.length
+        : 0;
+    setAvgRatings(avgRating);
 
-  const products = useSelector((state) => state.product.products);
-  const productsDatasTrain = products.map((item) => {
-    const data = { id: item.productId, description: item.description };
-    return data;
-  });
-  // const tf_idf_function = (productsDatasTrain) => {
-  //   let splitArray = [];
+    const fullStars = Math.floor(avgRating); 
+    const hasHalfStar = avgRating % 1 !== 0; 
 
-  //   productsDatasTrain.forEach((productData) => {
-  //     const splitString = productData.description.split(" ");
-  //     splitArray.push(splitString);
-  //   });
-
-  //   console.log("splitArray", splitArray);
-  //   let tf_idfVectorArray = [];
-  //   productsDatasTrain.forEach((productData) => {
-  //     const splitString = productData.description.split(" ");
-  //     const splitData = [];
-  //     splitString.forEach((item) => {
-  //       if (
-  //         splitData.findIndex((itemFindIndex) => itemFindIndex === item) === -1
-  //       ) {
-  //         splitData.push(item);
-  //       }
-  //     });
-
-  //     let tf_idfVectorArrayItems = [];
-  //     splitData.forEach((itemSplit) => {
-  //       let docsWithTerm = 0;
-  //       const arrayItems = splitString.filter(
-  //         (itemFilter) => itemFilter === itemSplit
-  //       );
-  //       const tf = arrayItems.length / splitString.length;
-
-  //       splitArray.forEach((splitArrayItems) => {
-  //         if (
-  //           splitArrayItems.findIndex(
-  //             (itemFindIndex) => itemFindIndex === itemSplit
-  //           ) !== -1
-  //         )
-  //           docsWithTerm += 1;
-  //       });
-
-  //       const idf = Math.log(productsDatasTrain.length / docsWithTerm);
-
-  //       const tf_idf = tf * idf;
-  //       const tf_idfObject = { key: itemSplit, tf_idf: tf_idf };
-  //       tf_idfVectorArrayItems.push(tf_idfObject);
-  //     });
-  //     const tf_idfVectorArrayItemsSort = tf_idfVectorArrayItems
-  //       .sort((a, b) => b.tf_idf - a.tf_idf)
-  //       .slice(0, 5);
-  //     const tf_idfVectorArrayItemsWithID = {
-  //       id: productData.id,
-  //       tf_idfArray: tf_idfVectorArrayItemsSort,
-  //     };
-  //     tf_idfVectorArray.push(tf_idfVectorArrayItemsWithID);
-  //   });
-  //   return tf_idfVectorArray;
-  // };
-
-  // const cosineFunction = (currentData, compareData) => {
-  //   let sumNumerator = 0;
-  //   let sumCurrentData = 0;
-  //   let sumCompareData = 0;
-  //   for (let i = 0; i < currentData.length; i++) {
-  //     sumNumerator += currentData[i].tf_idf * compareData[i].tf_idf;
-  //     sumCurrentData += currentData[i].tf_idf ** 2;
-  //     sumCompareData += compareData[i].tf_idf ** 2;
-  //   }
-
-  //   const mulDenominator =
-  //     Math.sqrt(sumCurrentData) * Math.sqrt(sumCompareData);
-  //   const cosine = sumNumerator / mulDenominator;
-
-  //   return cosine;
-  // };
-
-  // useEffect(() => {
-  //   const contentBasedRecommned = (productsDatasTrain) => {
-  //     if (products.length !== 0) {
-  //       const tf_idfVectorArray = tf_idf_function(productsDatasTrain);
-  //       const idDataTrain = id;
-  //       const currentTf_idfProduct = tf_idfVectorArray.find(
-  //         (itemFind) => itemFind.id == idDataTrain
-  //       );
-  //       let cosineArray = [];
-  //       tf_idfVectorArray.forEach((tf_idfVectorItem) => {
-  //         const cosine = cosineFunction(
-  //           currentTf_idfProduct.tf_idfArray,
-  //           tf_idfVectorItem.tf_idfArray
-  //         );
-  //         const cosineObj = { id: tf_idfVectorItem.id, cosine: cosine };
-  //         cosineArray.push(cosineObj);
-  //       });
-  //       const cosineArraySort = cosineArray
-  //         .sort((a, b) => b.cosine - a.cosine)
-  //         .slice(1,5);
-  //       console.log(currentTf_idfProduct);
-
-  //       const productRecommend = [];
-  //       cosineArraySort.forEach((itemSort) => {
-  //         productRecommend.push(
-  //           products.find((itemProduct) => itemProduct.id === itemSort.id)
-  //         );
-  //       });
-  //       setProductRecommend(productRecommend);
-  //     }
-  //   };
-
-  //   contentBasedRecommned(productsDatasTrain);
-  // }, [productDetail]);
-  const [tab, setTab] = useState("desc");
-  const [rating, setRating] = useState(0);
-
-  const reviewMsg = useRef("");
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    const reivewUserMsg = reviewMsg.current.value;
-    const dataFeedBack = {
-      id: id,
-      comment: reivewUserMsg,
-      rating,
-    };
-
-    const fetchFeedBackApi = async () => {
-      const respone = await postFeedBackService(dataFeedBack);
-      const responeFeedBack = await getProductDetailFeedBackService(id);
-      let cloneProductDetail = { ...productDetail };
-      cloneProductDetail = {
-        ...cloneProductDetail,
-        feedBack: responeFeedBack.data,
-      };
-      setProductDetail(cloneProductDetail);
-      toast.success("Review submitted");
-    };
-
-    if (currentUser !== null) {
-      fetchFeedBackApi();
-      reviewMsg.current.value = "";
-    } else {
-      toast.error("You must login before comment");
+    const stars = [];
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<i key={i} className="ri-star-s-fill"></i>);
     }
-  };
 
+    if (hasHalfStar) {
+      stars.push(<i key="half" className="ri-star-half-s-line"></i>);
+    }
+    setStar(stars);
+
+    console.log(avgRating, totalRating);
+  }, [productDetail?.feedBack]);
+
+  const [tab, setTab] = useState("desc");
+
+  const cartItems = useSelector((state) => state.cart.cartItems) || [];
   const addToCart = () => {
+    let isValid = true;
+
+    cartItems?.forEach((item) => {
+      console.log(typeof item.product.productId);
+      console.log(productDetail);
+      if (item.product.productId == id) {
+        if (item.quantity + countAddCart > productDetail.inventoryQuantity) {
+          toast.warning(
+            `${item.product.productName} has only ${item.product.inventoryQuantity} products left in stock`
+          );
+          isValid = false;
+        }
+      }
+    });
     const dataCart = {
       id,
       price: productDetail.price,
       quantity: countAddCart,
-      userName: currentUser.userName,
+      userName: currentUser?.userName,
     };
     const fetchAddProductToCartApi = async () => {
       setLoadingCart(true);
@@ -220,9 +111,12 @@ const ProductDetails = () => {
       await dispatch(getAllCartItemApi());
     };
     if (currentUser !== null) {
-      fetchAddProductToCartApi();
+      if (isValid) {
+        fetchAddProductToCartApi();
+      }
     } else {
       toast.error("You must login before add product to cart");
+      navigate("/login");
     }
   };
 
@@ -254,30 +148,23 @@ const ProductDetails = () => {
                   <div className="product__details">
                     <h2>{productDetail.name}</h2>
                     <div className="product__rating d-flex align-items-center gap-5 mb-3">
-                      <div>
-                        <span>
-                          <i className="ri-star-s-fill"></i>
-                        </span>
-                        <span>
-                          <i className="ri-star-s-fill"></i>
-                        </span>
-                        <span>
-                          <i className="ri-star-s-fill"></i>
-                        </span>
-                        <span>
-                          <i className="ri-star-s-fill"></i>
-                        </span>
-                        <span>
-                          <i className="ri-star-half-s-line"></i>
-                        </span>
+                      <div style={{color:"#FFC107"}}>
+                        {star}
                       </div>
                       <p>
-                        (<span>{4.7}</span> ratings)
+                        {avgRatings !== 0 ? (
+                          <div>
+                             <span>{avgRatings} ratings </span>
+                            <span className="text-dark">({productDetail?.feedBack?.length} reviews)</span>
+                          </div>
+                        ) : (
+                          <div>No reviews yet</div>
+                        )}
                       </p>
                     </div>
                     <div className="d-flex align-items-center gap-5">
                       <span className="product__price">
-                        {productDetail.price} VND
+                        {USD.format(productDetail.price)}
                       </span>
                       <span>
                         Category:{" "}
@@ -288,7 +175,13 @@ const ProductDetails = () => {
                     </div>
                     <p className="mt-3">{productDetail.description}</p>
                     <div className="d-flex mt-3">
-                      <div className={productDetail.inventoryQuantity === 0 ? "d-none" : "btn--group__addCart mr-2"}>
+                      <div
+                        className={
+                          productDetail.inventoryQuantity === 0
+                            ? "d-none"
+                            : "btn--group__addCart mr-2"
+                        }
+                      >
                         <button
                           className="btn--sub__addCart"
                           onClick={() => {
@@ -306,10 +199,11 @@ const ProductDetails = () => {
 
                         <button
                           className="btn--sub__addCart"
-                          // onClick={() => setCountAddCart(countAddCart + 1)}
                           onClick={() => {
                             let count =
-                              countAddCart === productDetail.inventoryQuantity  ? countAddCart : countAddCart + 1;
+                              countAddCart === productDetail.inventoryQuantity
+                                ? countAddCart
+                                : countAddCart + 1;
                             setCountAddCart(count);
                           }}
                         >
@@ -329,8 +223,11 @@ const ProductDetails = () => {
                     <motion.button
                       whileTap={{ scale: 1.2 }}
                       disabled={productDetail.inventoryQuantity === 0}
-                      className={productDetail.inventoryQuantity === 0 ? "buy__btn btn__addCart_disabled" : "buy__btn btn__addCart" }
-
+                      className={
+                        productDetail.inventoryQuantity === 0
+                          ? "buy__btn btn__addCart_disabled"
+                          : "buy__btn btn__addCart"
+                      }
                       onClick={addToCart}
                     >
                       Add to cart
@@ -371,18 +268,28 @@ const ProductDetails = () => {
                       <div className="review__wrapper">
                         <ul>
                           {productDetail.feedBack.map((item, index) => {
-                            return (
+                            console.log(item);
+                            return item?.user?.userName ===
+                              currentUser?.userName ? (
                               <li key={index}>
                                 <div className="user__comment__block">
                                   <div>
-                                    <img
-                                      className="avatarUser__comment"
-                                      src={item.avatar}
-                                      alt="#"
-                                    />
+                                    {item.user?.avatar ? (
+                                      <img
+                                        className="avatarUser__comment"
+                                        src={item.user?.avatar}
+                                        alt="#"
+                                      />
+                                    ) : (
+                                      <img
+                                        className="avatarUser__comment"
+                                        src={user_icon}
+                                        alt="#"
+                                      />
+                                    )}
                                   </div>
                                   <div>
-                                    <h6>{item.user.userName}</h6>
+                                    <h6>{item.user?.userName}</h6>
 
                                     <span>{item.rating} (average rating)</span>
                                   </div>
@@ -390,42 +297,45 @@ const ProductDetails = () => {
 
                                 <p>{item.commentText}</p>
                               </li>
+                            ) : (
+                              <></>
+                            );
+                          })}
+                          {productDetail.feedBack.map((item, index) => {
+                            console.log(item);
+                            return item?.user?.userName !==
+                              currentUser?.userName ? (
+                              <li key={index}>
+                                <div className="user__comment__block">
+                                  <div>
+                                    {item.user?.avatar ? (
+                                      <img
+                                        className="avatarUser__comment"
+                                        src={item.user?.avatar}
+                                        alt="#"
+                                      />
+                                    ) : (
+                                      <img
+                                        className="avatarUser__comment"
+                                        src={user_icon}
+                                        alt="#"
+                                      />
+                                    )}
+                                  </div>
+                                  <div>
+                                    <h6>{item.user?.userName}</h6>
+
+                                    <span>{item.rating} (average rating)</span>
+                                  </div>
+                                </div>
+
+                                <p>{item.commentText}</p>
+                              </li>
+                            ) : (
+                              <></>
                             );
                           })}
                         </ul>
-                        <div className="review__form">
-                          <h4>Leave your experience</h4>
-                          <form action="" onSubmit={submitHandler}>
-                            <div className="form__rating d-flex align-items-center gap-3">
-                              {RATINGS.map((item, key) => {
-                                return (
-                                  <motion.span
-                                    whileTap={{ scale: 1.2 }}
-                                    onClick={() => setRating(item)}
-                                  >
-                                    {item} <i className="ri-star-s-fill"></i>
-                                  </motion.span>
-                                );
-                              })}
-                            </div>
-                            <div className="form__group">
-                              <textarea
-                                rows={4}
-                                type="text"
-                                placeholder="Review Meassage ..."
-                                ref={reviewMsg}
-                                required
-                              />
-                            </div>
-                            <motion.button
-                              whileTap={{ scale: 1.2 }}
-                              type="submit"
-                              className="buy__btn"
-                            >
-                              Submit
-                            </motion.button>
-                          </form>
-                        </div>
                       </div>
                     </div>
                   )}

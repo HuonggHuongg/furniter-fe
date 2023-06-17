@@ -5,3 +5,11 @@
 .title__order--item {
     margin-bottom: 20px;
 }
+
+.button__disable{
+    background: #53575b;
+    border: 1px solid #53575b;
+    color: #fff;
+    cursor: not-allowed;
+    pointer-events: none;
+}

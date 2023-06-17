@@ -15,6 +15,7 @@ import "./header.css";
 import logo from "../../../assets/images/eco-logo.png";
 import user_icon from "../../../assets/images/user-icon.png";
 import { LogoutApi } from "../../../redux/slices/userSlice";
+import { getAllCartItemApi,CartLogoutApi } from "../../../redux/slices/cartSlice";
 
 const nav__links = [
   {
@@ -60,7 +61,9 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.clear();
     dispatch(LogoutApi());
+    dispatch(CartLogoutApi());
     navigate("/home");
+    // dispatch(getAllCartItemApi());
   };
 
   const handleClickLogin = () => {
@@ -98,7 +101,7 @@ const Header = () => {
                   })}
                 {currentUser === null &&
                   nav__links.map((item, index) => {
-                    return item.path !== "cart" ? (
+                    return (item.path !== "cart" && item.path !== "order" ) ? (
                       <li className="nav__item" key={index}>
                         <NavLink
                           to={item.path}
@@ -113,14 +116,11 @@ const Header = () => {
                       <li style={{ display: "none" }} key={index}></li>
                     );
                   })}
+                  
               </ul>
             </div>
 
             <div className="nav__icons">
-              {/* <span className="fav__icon">
-                <i className="ri-heart-line"></i>
-                <span className="badge">1</span>
-              </span> */}
               <span className="cart__icon" onClick={navigateToCart}>
                 <i className="ri-shopping-bag-line"></i>
                 <span className="badge">{totalQuantity}</span>

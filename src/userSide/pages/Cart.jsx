@@ -1,29 +1,29 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Progress } from "reactstrap";
-import { useSelector, useDispatch, useEffect} from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
 import { motion } from "framer-motion";
 import "../styles/cart.css";
 import { Link } from "react-router-dom";
-import { deleteCartItemApi } from "../../redux/slices/cartSlice";
+import { deleteCartItemApi, getAllCartItemApi } from "../../redux/slices/cartSlice";
 import { toast } from "react-toastify";
-
+import { USD } from "../../utils/convertMoney";
+import { useEffect } from "react";
+import { updateQuantityCartItemService } from "../../services/cartServices";
 
 const Cart = () => {
   const [loadingDelete, setLoadingDelete] = useState(false);
 
   const cartItems = useSelector((state) => state.cart.cartItems);
-  console.log(cartItems)
+  console.log(cartItems);
 
-  const subTotal = cartItems? cartItems.reduce(
-    (total, item) => total + Number(item.paymentCartItem),
-    0
-  ) : 0;
+  const subTotal = cartItems
+    ? cartItems.reduce((total, item) => total + Number(item.paymentCartItem), 0)
+    : 0;
   const dispatch = useDispatch();
   const removeProductFromCart = (id) => {
-
     // console.log(dataCartDelete);
     const fetchRemoveProductFromCartApi = async () => {
       setLoadingDelete(true);
@@ -33,6 +33,11 @@ const Cart = () => {
     };
 
     fetchRemoveProductFromCartApi();
+  };
+
+  const updateQuantity = async(cartItemId, quantity) => {
+    updateQuantityCartItemService(quantity, cartItemId);
+    await dispatch(getAllCartItemApi());
   };
 
   return (
@@ -66,6 +71,7 @@ const Cart = () => {
                         item={item}
                         key={index}
                         onRemoveProductFromCart={removeProductFromCart}
+                        onUpdateQuantity={updateQuantity}
                       />
                     ))}
                   </tbody>
@@ -76,7 +82,7 @@ const Cart = () => {
               <div>
                 <h6 className="d-flex align-items-center justify-content-between">
                   Subtotal
-                  <span className="fs-4 fw-bold">{subTotal} VND</span>
+                  <span className="fs-4 fw-bold">{USD.format(subTotal)}</span>
                 </h6>
               </div>
               <p className="fs-6 mt-2">
@@ -99,7 +105,28 @@ const Cart = () => {
 };
 
 const Tr = (props) => {
-  const { item, onRemoveProductFromCart } = props;
+  const { item, onRemoveProductFromCart, onUpdateQuantity } = props;
+  const [quantity, setQuantity] = useState(item.quantity);
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const increaseQuantity = () => {
+    if (quantity < item.product.inventoryQuantity) {
+      setQuantity(quantity + 1);
+    } else {
+      toast.warn(
+        `${item.product.productName} has only ${item.product.inventoryQuantity} products left in stock`
+      );
+    }
+  };
+
+  useEffect(() => {
+    onUpdateQuantity(item.cartItemId, quantity);
+  }, [item.cartItemId, quantity, onUpdateQuantity]);
 
   return (
     <tr>
@@ -108,7 +135,28 @@ const Tr = (props) => {
       </td>
       <td>{item.product.productName}</td>
       <td>{item.product.price}</td>
-      <td>{item.quantity}</td>
+
+      <td>
+        <div
+          className={
+            item.product.inventoryQuantity === 0
+              ? "d-none"
+              : "btn--group__addCart mr-2"
+          }
+        >
+          <button className="btn--sub__addCart" onClick={decreaseQuantity}>
+            <i className="ri-subtract-fill"></i>
+          </button>
+
+          <div className="btn--sub__count">
+            <p>{quantity}</p>
+          </div>
+
+          <button className="btn--sub__addCart" onClick={increaseQuantity}>
+            <i className="ri-add-fill"></i>
+          </button>
+        </div>
+      </td>
       <td>
         <motion.span
           whileTap={{ scale: 1.2 }}

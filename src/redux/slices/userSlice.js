@@ -21,14 +21,14 @@ export const userSlice = createSlice({
     builder
       .addCase(userLoginApi.pending, (state) => {
         state.status = "loading";
-        state.message = ""
+        state.message = "";
       })
       .addCase(userLoginApi.fulfilled, (state, action) => {
         state.status = "idle";
-        state.token = action.payload.accessToken
-        state.currentUser = action.payload.currentUser
-        state.userRoles = action.payload.userRoles
-        state.message = "Login successfully!"
+        state.token = action.payload.accessToken;
+        state.currentUser = action.payload.currentUser;
+        state.userRoles = action.payload.userRoles;
+        state.message = "Login successfully!";
       })
       .addCase(userLoginApi.rejected, (state) => {
         state.status = "idle";
@@ -43,17 +43,13 @@ export const userSlice = createSlice({
         state.userRoles = null;
         state.status = "idle";
         state.message = "";
-      })
+      });
   },
 });
 
-export const LogoutApi = createAsyncThunk(
-  "user/userLogout",
-  async () => {
-    
-    return {};
-  }
-);
+export const LogoutApi = createAsyncThunk("user/userLogout", async () => {
+  return {};
+});
 
 export const userLoginApi = createAsyncThunk(
   "user/userLogin",
@@ -61,7 +57,7 @@ export const userLoginApi = createAsyncThunk(
     const responeApi = await loginServices(dataLogin);
 
     if (responeApi.status === 401) {
-      return Promise.reject()
+      return Promise.reject();
     }
 
     const responeCurrenUser = {

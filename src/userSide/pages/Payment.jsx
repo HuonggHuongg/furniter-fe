@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import moment from 'moment';
 import {
   addProductToOrderService,
   changeStatusPaymentService,
   changeTotalOrderService,
-  getAllOrderAnUserService,
+  getDetailsOrderService,
 } from "../../services/orderServices";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCartItemApi } from "../../redux/slices/cartSlice";
 import { toast } from "react-toastify";
+import { sendEmailPaymentSuccessService } from "../../services/paymentService";
 
 function Payment() {
   const state = useLocation();
@@ -18,29 +20,61 @@ function Payment() {
   const [transactionStatus] = useState(
     queryParams.get("vnp_TransactionStatus")
   );
+  const currentUser = JSON.parse(
+    localStorage.getItem("currentUserInfor")
+  ).currentUser;
 
   const cartItems = useSelector((state) => state.cart.cartItems);
   const [productIdList, setProductIdList] = useState([]);
+  const [orderItems, setOrderItems] = useState([]);
+
+  useEffect(() => {
+    getDetailsOrderService(orderId).then((data) => setOrderItems(data.data));
+  }, [orderId]);
+
+  console.log(orderItems);
 
   useEffect(() => {
     let productIdListAssign = [];
-    if (cartItems.length !== 0 && productIdList.length === 0) {
-      cartItems.forEach((cartItem) => {
-        productIdListAssign = [...productIdList, cartItem.product.productId];
-      });
+    if (productIdList.length === 0) {
+      if (cartItems?.length > 0) {
+        console.log(cartItems);
+        cartItems.forEach((cartItem) => {
+          productIdListAssign.push(cartItem.product.productId);
+        });
+        setProductIdList(productIdListAssign);
+      } else if (orderItems?.length > 0) {
+        orderItems.forEach((orderItem) => {
+          productIdListAssign.push(orderItem.product.productId);
+        });
+        setProductIdList(productIdListAssign);
+      }
     }
-    setProductIdList(productIdListAssign);
-  }, [cartItems]);
+  }, [cartItems, orderId, orderItems, orderItems?.length, productIdList]);
 
   useEffect(() => {
+    const currentDate = moment().format("DD MMMM YYYY");
+    const dataSendEmailPayment = {
+      userName: currentUser.userName,
+      subject: "Successful Payment",
+      email: currentUser.email,
+      receiver: currentUser.lastName + " " + currentUser.firstName,
+      orderId: orderId,
+      createdAt: currentDate,
+    };
     const fetchPaymentApi = async () => {
-      console.log(cartItems);
-      await addProductToOrderService(productIdList, orderId);
-      await changeTotalOrderService(orderId);
-      if (transactionStatus === "00") {
-        await changeStatusPaymentService(orderId);
+      if (cartItems?.length > 0) {
+        console.log(productIdList);
+        await addProductToOrderService(productIdList, orderId);
+        await changeTotalOrderService(orderId);
         await dispatch(getAllCartItemApi());
-        toast.success("Payment success");
+      }
+
+      if (transactionStatus === "00" && productIdList.length > 0) {
+        changeStatusPaymentService(orderId).then((data) => {
+          sendEmailPaymentSuccessService(dataSendEmailPayment);
+          toast.success("Payment success");
+        });
       }
     };
     fetchPaymentApi();

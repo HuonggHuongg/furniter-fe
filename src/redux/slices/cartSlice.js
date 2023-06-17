@@ -25,6 +25,9 @@ const cartSlice = createSlice({
         state.cartItems = action.payload;
         // state.totalAmount = action.payload[0].Cart.total_cart;
       })
+      .addCase(CartLogoutApi.fulfilled, (state, action) => {
+        state.cartItems = [];
+      });
       // .addCase(getAllCartItemApi.rejected, (state, action) => {
       //   state.cartItems = [];
       //   state.totalAmount = 0;
@@ -72,6 +75,10 @@ export const getAllCartItemApi = createAsyncThunk(
     return respone.data;
   }
 );
+
+export const CartLogoutApi = createAsyncThunk("cart/logout", async () => {
+  return {};
+});
 
 export const addProductToCartApi = createAsyncThunk(
   "cart/addProduct",

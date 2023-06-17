@@ -6,11 +6,13 @@ import {  useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+
 function App() {
   const loading = useSelector((state) => state.user.status);
   const navigate = useNavigate();
   const currentUserLocal = JSON.parse(localStorage.getItem("currentUserInfor"));
 const {currentUser} = useSelector((state) => state.user);
+
 
 const [isAdmin,setIsAdmin] = useState(false)
 console.log(isAdmin);
@@ -28,7 +30,7 @@ useEffect(()=>{
   console.log(currentUser)
   useEffect(() => {
     if(isAdmin && currentUser.userName){
-      navigate("/admin/products")
+      navigate("/admin/")
     }
   }, [isAdmin])
   return (

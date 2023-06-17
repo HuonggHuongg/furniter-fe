@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { getAllProductUserService } from "../../services/productService";
 import { getAllCategoryServices } from "../../services/categoryServices";
+import { useRef } from "react";
 
 const Shop = () => {
   const [pagination, setPagination] = useState();
@@ -18,6 +19,7 @@ const Shop = () => {
   const [sortValue, setSortValue] = useState("all");
   const [searchValue, setSearchValue] = useState("");
   const [categories, setCategories] = useState();
+  
   useEffect(() => {
     const getAllCategoriesApi = () => {
       getAllCategoryServices().then((data) => {
@@ -25,12 +27,12 @@ const Shop = () => {
       });
     };
     getAllCategoriesApi();
-  },[]);
+  }, []);
   console.log(categories);
 
   useEffect(() => {
     const getAllProductsApi = () => {
-      getAllProductUserService(currentPage, filterValue,searchValue,sortValue)
+      getAllProductUserService(currentPage, filterValue, searchValue, sortValue)
         .then((data) => {
           console.log(data);
           setProductsData(data.content);
@@ -42,7 +44,7 @@ const Shop = () => {
         });
     };
     getAllProductsApi();
-  }, [currentPage, filterValue, searchValue,sortValue]);
+  }, [currentPage, filterValue, searchValue, sortValue]);
   console.log(pagination);
 
   const handleFilter = (e) => {
@@ -62,6 +64,10 @@ const Shop = () => {
     setCurrentPage(1);
   };
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
   return (
     <Helmet title="Shop">
       <CommonSection title="Products" />
@@ -72,10 +78,14 @@ const Shop = () => {
               <div className="filter__widget">
                 <select onChange={handleFilter}>
                   <option value="">Filter By Category</option>
-                  {categories?.length >0 && categories.map(category => {
-                    return (<option value={category.categoryName}>{category.categoryName}</option>)
-                  })} 
-                 
+                  {categories?.length > 0 &&
+                    categories.map((category) => {
+                      return (
+                        <option value={category.categoryName}>
+                          {category.categoryName}
+                        </option>
+                      );
+                    })}
                 </select>
               </div>
             </Col>
@@ -109,16 +119,18 @@ const Shop = () => {
             )}
           </Row>
           {pagination && (
-            <PaginationControl
-              page={currentPage}
-              between={3}
-              total={pagination.totalElements}
-              limit={pagination.size}
-              changePage={(page) => {
-                setCurrentPage(page);
-              }}
-              ellipsis={1}
-            />
+            <div className="custom__pagination">
+              <PaginationControl
+                page={currentPage}
+                between={3}
+                total={pagination.totalElements}
+                limit={pagination.size}
+                changePage={(page) => {
+                  setCurrentPage(page);
+                }}
+                ellipsis={1}
+              />
+            </div>
           )}
         </Container>
       </section>

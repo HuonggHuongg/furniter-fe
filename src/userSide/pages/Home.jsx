@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "reactstrap";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import moment from "moment";
 
 import "../styles/home.css";
 import Services from "../components/UI/Services";
@@ -14,17 +15,17 @@ import Helmet from "../components/Helmet/Helmet";
 import heroImg from "../../assets/images/hero-img.png";
 import counterImg from "../../assets/images/counter-timer-img.png";
 
-import { useDispatch, useSelector } from "react-redux";
-import { getAllProductsApi } from "../../redux/slices/productSlice";
-import { useNavigate } from "react-router-dom";
+import {  useSelector } from "react-redux";
 import { getAllProductRecommend } from "../../services/recommendServices";
+import { trendingProductByPeriodTime } from "../../services/productService";
 const Home = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const products = useSelector((state) => state.product.products);
   const pageable = useSelector((state) => state.product.pageable);
-  console.log("pageable", pageable)
+  console.log("pageable", pageable);
   // console.log("products", products);
   const [trendingProducts, setTrendingProducts] = useState([]);
+  const [bestSellingProducts, setBestSellingProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
   const [productRecommend, setProductRecommend] = useState([]);
   const year = new Date().getFullYear();
@@ -32,33 +33,52 @@ const Home = () => {
   useEffect(() => {
     const currentDate = new Date();
     if (products.length !== 0) {
-      const filterNewProducts = products
-        .filter((item) => {
-          const productCreatedDate = new Date(item.createdAt);
-          return (
-            parseFloat(
-              (currentDate - productCreatedDate) / (1000 * 60 * 60 * 24)
-            ) < 30
-          );
+      const filterNewProducts = products.filter((item) => {
+        const productCreatedDate = new Date(item.createdAt);
+        return (
+          parseFloat(
+            (currentDate - productCreatedDate) / (1000 * 60 * 60 * 24)
+          ) < 30
+        );
+      });
+      const sortedProducts = filterNewProducts
+        .sort((a, b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+          return dateB - dateA;
         })
         .slice(0, 8);
+      console.log(sortedProducts);
 
-      const filterTrendingProducts = products
-        .filter((item) => {
-          console.log("item",item);
-          return item.category.categoryName === "Đèn"})
-        .slice(0, 4);
+      const filterTrendingProducts = bestSellingProducts.slice(0, 4);
 
-      setNewProducts(filterNewProducts);
+      setNewProducts(sortedProducts);
       setTrendingProducts(filterTrendingProducts);
     }
-  }, [products]);
+  }, [bestSellingProducts, products]);
+  useEffect(() => {
+    const fetchBestSellingProduct = async () => {
+      const currentDate = moment().format("YYYY-MM-DD");
+      const oneMonthAgo = moment(currentDate)
+        .subtract(1, "month")
+        .format("YYYY-MM-DD");
+      const startDate = moment(oneMonthAgo).add(1, "day").format("YYYY-MM-DD");
+      const productList = await trendingProductByPeriodTime(startDate, currentDate);
+      console.log(startDate, currentDate, productList.data);
+      setBestSellingProducts(productList.data);
+    };
+    fetchBestSellingProduct();
+  }, []);
 
   useEffect(() => {
     if (products.lenght !== 0) {
-      const accessToken = JSON.parse(localStorage.getItem("currentUserInfor"))?.accessToken;
+      const accessToken = JSON.parse(
+        localStorage.getItem("currentUserInfor")
+      )?.accessToken;
       const fetchApiGetAllProductRecommend = async () => {
-        const responeProductRecommend = await getAllProductRecommend(accessToken);
+        const responeProductRecommend = await getAllProductRecommend(
+          accessToken
+        );
         // const responeProductRecommend = [
         //   {
         //     rating: 1.7802607829281465,
@@ -84,14 +104,14 @@ const Home = () => {
         // });
 
         console.log(arrayProductRecommend);
-        setProductRecommend(arrayProductRecommend.slice(0,8));
-      }
+        setProductRecommend(arrayProductRecommend.slice(0, 8));
+      };
       fetchApiGetAllProductRecommend();
 
       // const fectchApi = async () => {
       //   const accessToken = JSON.parse(localStorage.getItem("token"));
       //   const responeProductRecommend = await getAllProductRecommend(accessToken);
-      //    console.log("responeProductRecommend", responeProductRecommend); 
+      //    console.log("responeProductRecommend", responeProductRecommend);
       // }
 
       // fectchApi();
@@ -107,9 +127,9 @@ const Home = () => {
                 <p className="hero__subtitle">Trending product in {year}</p>
                 <h2>Make Your Interior More Minimalistic & Modern</h2>
                 <p>
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex
-                  enim consequuntur est modi doloribus neque porro veritatis
-                  fugit sunt obcaecati?
+                  Meet our best professional design consultants to be guided and
+                  consulted, helping you fulfill your wish for the best home
+                  ever.
                 </p>
                 <motion.button whileTap={{ scale: 1.1 }} className="buy__btn">
                   <Link to={currentUser ? "/shop" : "/login"}>SHOP NOW</Link>
@@ -123,24 +143,6 @@ const Home = () => {
         </Container>
       </section>
       <Services />
-      {productRecommend.length !== 0 ? (
-        <section className="trending__products">
-          <Container>
-            <Row>
-              <Col lg="12" className="text-center">
-                <h2 className="section__title">Your recommendation</h2>
-              </Col>
-              {trendingProducts ? (
-                <ProductsList data={productRecommend} />
-              ) : (
-                <></>
-              )}
-            </Row>
-          </Container>
-        </section>
-      ) : (
-        <></>
-      )}
 
       <section className="best__sales">
         <Container>
@@ -169,7 +171,7 @@ const Home = () => {
                 whileTap={{ scale: 1.2 }}
                 className="buy__btn store__btn"
               >
-                <Link to="shop">Visit Store</Link>
+                <Link to="/shop">Visit Store</Link>
               </motion.button>
             </Col>
             <Col lg="6" md="6" className="text-end counter__img">

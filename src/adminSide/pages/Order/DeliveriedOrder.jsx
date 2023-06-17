@@ -2,8 +2,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
-import { VND } from "../../../utils/convertVND";
 import { useNavigate } from "react-router-dom";
+import { USD } from "../../../utils/convertMoney";
 
 export default function DeliveriedOrder() {
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ export default function DeliveriedOrder() {
       sortable: false,
       filterable: false,
       valueFormatter: (params) => {
-        return VND.format(params.value);
+        return USD.format(params.value);
       },
     },
     {
@@ -92,11 +92,11 @@ export default function DeliveriedOrder() {
 
   return (
     <>
-      <div style={{ height: "78vh", width: "100%", padding: "20px" }}>
+      <div style={{ height: "90vh", width: "100%", padding: "20px" }}>
         <DataGrid
           rows={rows}
           columns={columns}
-          pageSize={5}
+          pageSize={10}
           rowsPerPageOptions={[6]}
           checkboxSelection={false}
           disableSelectionOnClick

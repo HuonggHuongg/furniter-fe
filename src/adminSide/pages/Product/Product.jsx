@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import "./product.css";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-import { VND } from "../../../utils/convertVND";
+import { USD } from "../../../utils/convertMoney";
 
 export default function Product() {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ export default function Product() {
       width: 130,
       // type: "number",
       valueFormatter: (params) => {
-        return VND.format(params.value);
+        return USD.format(params.value);
       },
     },
 

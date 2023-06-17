@@ -119,7 +119,7 @@ const Signup = () => {
                 </FormGroup>
                 <FormGroup className="form__group">
                   <input
-                    type="text"
+                    type="password"
                     id="password"
                     placeholder="Enter your password"
                     value={formik.password}

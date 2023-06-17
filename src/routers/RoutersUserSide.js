@@ -13,7 +13,6 @@ import Profile from "../userSide/pages/Profile/Profile";
 import ForgotPassword from "../userSide/pages/ForgotPassword";
 import ResetPassword from "../userSide/pages/ResetPassword";
 import Payment from "../userSide/pages/Payment";
-
 const Routers = () => {
   return (
       <Routes>
@@ -31,6 +30,7 @@ const Routers = () => {
         <Route path="profile" element={<Profile />} />
         <Route path="forgot-password" element={<ForgotPassword/>}/>
         <Route path="reset-password" element={<ResetPassword/>}/>
+        <Route path="*" element={<Home />} />
       </Routes>
   );
 };

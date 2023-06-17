@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { getDetailsOrderService } from "../../../services/orderServices";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./order.css";
-import { VND } from "../../../utils/convertVND";
-import USDollar from "../../../utils/FormatMoney";
+import { USD } from "../../../utils/convertMoney";
 
 export default function OrderDetail() {
   const [orderArray, setOrderArray] = useState([]);
   const { state } = useLocation();
+  const navigate = useNavigate();
   const order = state;
 
   useEffect(() => {
@@ -65,14 +65,17 @@ export default function OrderDetail() {
     },
   ];
 
-  const rows = orderArray?.length > 0? orderArray.map((orderItem) => {
-    const product = orderItem.product;
-    return {
-      ...orderItem,
-      productName: product.productName,
-      image: product.image,
-    };
-  }):[];
+  const rows =
+    orderArray?.length > 0
+      ? orderArray.map((orderItem) => {
+          const product = orderItem.product;
+          return {
+            ...orderItem,
+            productName: product.productName,
+            image: product.image,
+          };
+        })
+      : [];
 
   const converDate = (value) => {
     const date = new Date(value);
@@ -80,15 +83,20 @@ export default function OrderDetail() {
     const time = date.toLocaleTimeString();
     return day + " " + time;
   };
-console.log(order)
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   return (
     <div className="container px-5">
-      <h3 className="mb-2">OrderDetail</h3>
+      <button className="btn btn-outline-dark mb-3" onClick={handleGoBack}>
+        Go back
+      </button>
       <div className="mb-3">
-        <p>Order {order.id}</p>
+        <h4>Order #{order.orderId}</h4>
         <p>Create at {converDate(order.createdAt)}</p>
       </div>
-      <div style={{ height: "40vh", width: "100%" }}>
+      <div style={{ height: "50vh", width: "100%" }}>
         <DataGrid
           rowHeight={80}
           rows={rows}
@@ -100,13 +108,28 @@ console.log(order)
           getRowId={(row) => row.orderItemId}
         />
       </div>
-      <div className="container mt-5">
-        <div className="row ">
+      <div className="container my-3">
+        <div className="row">
           <div className=" col-6 ">
             <div className="info_user--order">
-              <p>{order.fullName}</p>
-              <p>{order.receivingAddress}</p>
-              <p>{order.phoneNumber}</p>
+              <div className="col-12">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>Receiver</td>
+                      <th>: {order.fullName}</th>
+                    </tr>
+                    <tr>
+                      <td>Address Delivery</td>
+                      <th>: {order.receivingAddress}</th>
+                    </tr>
+                    <tr>
+                      <td>Phone Number</td>
+                      <th>: {order.phoneNumber}</th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
           <div className="col-6 ">
@@ -114,7 +137,7 @@ console.log(order)
               <h4>Totalize</h4>
               <p className="mt-2">
                 Subtotal({orderArray.length} product) :{" "}
-                {USDollar.format(order.totalOrder)}
+                {USD.format(order.totalOrder)}
               </p>
             </div>
           </div>

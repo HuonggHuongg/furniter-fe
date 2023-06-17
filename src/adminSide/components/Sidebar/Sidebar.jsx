@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Box,
-  Divider,
   Drawer,
   IconButton,
   List,
@@ -18,15 +17,15 @@ import Collapse from "@mui/material/Collapse";
 import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 import DeliveryDiningOutlinedIcon from "@mui/icons-material/DeliveryDiningOutlined";
 import {
-  SettingsOutlined,
   ChevronLeft,
-  ChevronRightOutlined,
   HomeOutlined,
   ShoppingCartOutlined,
   Groups2Outlined,
   ReceiptLongOutlined,
+  ChatBubble,
+  Report
 } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import FlexBetween from "../FlexBetween";
 import "./Sidebar.css";
@@ -46,11 +45,16 @@ const navItems = [
     icon: <ShoppingCartOutlined />,
     url: "products",
   },
-  // {
-  //   text: "Category",
-  //   icon: <Groups2Outlined />,
-  //   url: "category",
-  // },
+  {
+    text: "Chat support",
+    icon: <ChatBubble/>,
+    url: "chat",
+  },
+  {
+    text: "Category",
+    icon: <Groups2Outlined />,
+    url: "category",
+  },
   // {
   //   text: "Blog",
   //   icon: <PublicOutlined />,

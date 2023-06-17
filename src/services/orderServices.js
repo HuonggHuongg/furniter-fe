@@ -11,10 +11,13 @@ export const createOrderService = async (dataCreateOrder) => {
         phoneNumber: `${dataCreateOrder.number}`,
       },
       headers: {
-        Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS' 
+        Authorization:
+          "Bearer " +
+          JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Methods":
+          "PUT, POST, GET, DELETE, PATCH, OPTIONS",
       },
     });
     return respone;
@@ -24,7 +27,7 @@ export const createOrderService = async (dataCreateOrder) => {
 };
 
 export const addProductToOrderService = async (dataCart, idOrder) => {
-  console.log(dataCart)
+  console.log(dataCart);
   try {
     const respone = await requestApi({
       method: "post",
@@ -33,10 +36,13 @@ export const addProductToOrderService = async (dataCart, idOrder) => {
         productIds: dataCart,
       },
       headers: {
-        Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS' 
+        Authorization:
+          "Bearer " +
+          JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Methods":
+          "PUT, POST, GET, DELETE, PATCH, OPTIONS",
       },
     });
     return respone;
@@ -45,18 +51,20 @@ export const addProductToOrderService = async (dataCart, idOrder) => {
   }
 };
 
-export const changeTotalOrderService = (idOrder)=>{
+export const changeTotalOrderService = (idOrder) => {
   return requestApi({
     method: "patch",
     url: `order/changeTotal/${idOrder}`,
     headers: {
-      Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS' 
+      Authorization:
+        "Bearer " +
+        JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Methods": "PUT, POST, GET, DELETE, PATCH, OPTIONS",
     },
   });
-}
+};
 
 export const getAllOrderAnUserService = async () => {
   try {
@@ -64,10 +72,13 @@ export const getAllOrderAnUserService = async () => {
       method: "get",
       url: "order",
       headers: {
-        Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS' 
+        Authorization:
+          "Bearer " +
+          JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Methods":
+          "PUT, POST, GET, DELETE, PATCH, OPTIONS",
       },
     });
     return respone;
@@ -82,10 +93,13 @@ export const getDetailsOrderService = async (id) => {
       method: "get",
       url: `orderItem/${id}`,
       headers: {
-        Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS' 
+        Authorization:
+          "Bearer " +
+          JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Methods":
+          "PUT, POST, GET, DELETE, PATCH, OPTIONS",
       },
     });
     return respone;
@@ -99,50 +113,74 @@ export const getAllOrderPendingService = () => {
     method: "get",
     url: "order/pending",
     headers: {
-      Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      Authorization:
+        "Bearer " +
+        JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
   });
 };
-
 
 export const getAllOrderDeliveredService = () => {
   return requestApi({
     method: "get",
     url: "order/delivered",
     headers: {
-      Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      Authorization:
+        "Bearer " +
+        JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
   });
 };
 
-
-export const changeStatusOrderService = (idOrder)=>{
+export const changeStatusOrderService = (idOrder) => {
   return requestApi({
     method: "patch",
     url: `order/changeStatus/${idOrder}`,
     headers: {
-      Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS' 
+      Authorization:
+        "Bearer " +
+        JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Methods": "PUT, POST, GET, DELETE, PATCH, OPTIONS",
     },
   });
-}
+};
 
-export const changeStatusPaymentService = (idOrder)=>{
+export const changeStatusPaymentService = (idOrder) => {
   return requestApi({
     method: "patch",
     url: "order/changePaymentStatus",
     headers: {
-      Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS' 
+      Authorization:
+        "Bearer " +
+        JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Methods": "PUT, POST, GET, DELETE, PATCH, OPTIONS",
     },
-    params:{id:idOrder},
+    params: { id: idOrder },
   });
-}
+};
+
+export const changeFeedbackStatusService = (orderItemId) => {
+  return requestApi({
+    method: "patch",
+    url: "orderItem/changeFeedbackStatus",
+    headers: {
+      Authorization:
+        "Bearer " +
+        JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Methods": "PUT, POST, GET, DELETE, PATCH, OPTIONS",
+    },
+    params: { id: orderItemId },
+  });
+};
+
+

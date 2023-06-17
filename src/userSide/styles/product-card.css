@@ -1,5 +1,6 @@
 .product__item {
     cursor: pointer;
+    height: 22rem;
 }
 
 .product__info h3 {
@@ -31,6 +32,23 @@
     border-radius: 50px;
 }
 
+.product__price--percent-detail{
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    margin: 5px 0 0;
+    text-align: center;
+    width: 100%;
+}
+
+.product__price--percent{
+    left: -15px;
+    position: absolute;
+    top: -1px;
+    width: 80px;
+    background: var(--primary-color);
+}
+
 @media only screen and (max-width: 922px) {
     .product__info h3 a {
         font-size: 1.1rem;
@@ -46,3 +64,12 @@
         font-size: 1rem;
     }
 }
+
+
+.coming-soon-badge {
+    background-color: #0A1D37;
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+  }

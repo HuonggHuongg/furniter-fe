@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-import { VND } from "../../../utils/convertVND";
 import { changeStatusOrderApi } from "../../../redux/slices/orderPendingSlice";
+import { USD } from "../../../utils/convertMoney";
+import { Chip } from "@mui/material";
 
 export default function PendingOrder() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function PendingOrder() {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "username",
       headerName: "Username",
-      width: 150,
+      width: 130,
       sortable: false,
       valueGetter: (params) => {
         return params.row.user.userName;
@@ -35,7 +36,7 @@ export default function PendingOrder() {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "fullName",
       headerName: "Customer",
-      width: 150,
+      width: 130,
       sortable: false,
     },
 
@@ -44,13 +45,45 @@ export default function PendingOrder() {
       field: "totalOrder",
       headerName: "Total price",
       width: 130,
-      type: "number",
-      sortable: false,
-      filterable: false,
       valueFormatter: (params) => {
-        return VND.format(params.value);
+        return USD.format(params.value);
       },
     },
+    {
+      renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
+      field: "paymentStatus",
+      headerName: "Status",
+      width: 100,
+      renderCell: (params) => (
+        <div>
+          {!params.value && (
+            <Chip
+              label="Unpaid"
+              color="warning"
+              sx={{
+                height: 24,
+                fontSize: "0.75rem",
+                textTransform: "capitalize",
+                "& .MuiChip-label": { fontWeight: 500 },
+              }}
+            />
+          )}
+          {params.value && (
+            <Chip
+              label="Paid"
+              color="info"
+              sx={{
+                height: 24,
+                fontSize: "0.75rem",
+                textTransform: "capitalize",
+                "& .MuiChip-label": { fontWeight: 500 },
+              }}
+            />
+          )}
+        </div>
+      ),
+    },
+
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "createdAt",
@@ -107,12 +140,12 @@ export default function PendingOrder() {
 
   return (
     <>
-      <div style={{ height: "78vh", width: "100%", padding: "20px" }}>
+      <div style={{ height: "90vh", width: "100%", padding: "20px" }}>
         <DataGrid
           rows={rows}
           columns={columns}
           pageSize={10}
-          rowsPerPageOptions={[6]}
+          rowsPerPageOptions={[7]}
           checkboxSelection={false}
           disableSelectionOnClick
           getRowId={(row) => row.orderId}

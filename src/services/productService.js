@@ -13,6 +13,19 @@ export const getAllProductService = async () => {
   }
 };
 
+export const trendingProductByPeriodTime = async (start, end) => {
+  try {
+    const respone = await requestApi({
+      method: "get",
+      url: "product/trending-product",
+      params: { startDate: start, endDate: end },
+    });
+    return respone;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const getAllProductUserService = async (currentPage,filterValue, searchValue,sortValue) => {
   try {
     let orderValue ="";

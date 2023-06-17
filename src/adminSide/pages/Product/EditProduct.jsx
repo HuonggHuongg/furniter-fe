@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import FormProduct from "./FormProduct";
 import { toast } from "react-toastify";
-import { editProductApi } from "../../../redux/slices/productSlice";
+import { editProductApi, getAllProductsApi } from "../../../redux/slices/productSlice";
 
 export default function EditProduct() {
   const { idProduct } = useParams();
@@ -38,6 +38,8 @@ export default function EditProduct() {
     await toast.success("The product has been successfully changed!");
     console.log("form data", formData);
     await dispatch(editProductApi(formData, navigate, idProduct));
+    await dispatch(getAllProductsApi())
+
   };
   return (
     <div className="container" style={{ padding: "0px 60px" }}>

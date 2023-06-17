@@ -9,6 +9,7 @@ export default function FormProduct(props) {
   const categories = useSelector((state) => state.categorySlice.categories);
   const [uploadedImageURLs, setUploadedImageURLs] = useState("");
   const imgReview = useRef(null);
+  const [errorsImage, setErrorsImage] = useState();
   const formik = useFormik({
     initialValues: {
       ...initialData,
@@ -30,9 +31,21 @@ export default function FormProduct(props) {
       const data = typeof image == "string" ? restValues : values;
 
       let formData = new FormData();
-      formData = { ...values, image: uploadedImageURLs };
-      console.log(formData);
-      submitForm(formData);
+      console.log(values.image);
+      console.log(uploadedImageURLs);
+      if (uploadedImageURLs !== "") {
+        formData = { ...values, image: uploadedImageURLs };
+        console.log(formData);
+        submitForm(formData);
+        setErrorsImage("");
+      } else if (values.image !== "") {
+        formData = { ...values, image: values.image };
+        console.log(formData);
+        submitForm(formData);
+        setErrorsImage("");
+      } else {
+        setErrorsImage("Image is required");
+      }
     },
   });
 
@@ -61,6 +74,7 @@ export default function FormProduct(props) {
             <label htmlFor="image" className="form-label">
               Image product
             </label>
+            {errorsImage && <div className="text-danger">{errorsImage}</div>}
             <ProductImageUpload
               existingImages={values?.image ? values?.image : ""}
               onImageUpload={handleImageUpload}
