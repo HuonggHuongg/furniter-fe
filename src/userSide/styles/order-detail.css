@@ -6,10 +6,14 @@
     margin-bottom: 20px;
 }
 
-.button__disable{
+.button__disable {
     background: #53575b;
     border: 1px solid #53575b;
     color: #fff;
     cursor: not-allowed;
     pointer-events: none;
+}
+
+.nav__order__active {
+    /* background: #53575b !important; */
 }

@@ -4,6 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { USD } from "../../../utils/convertMoney";
+import { format } from "date-fns";
 
 export default function DeliveriedOrder() {
   const navigate = useNavigate();
@@ -40,7 +41,6 @@ export default function DeliveriedOrder() {
       field: "totalOrder",
       headerName: "Total price",
       width: 130,
-      type: "number",
       sortable: false,
       filterable: false,
       valueFormatter: (params) => {
@@ -56,7 +56,7 @@ export default function DeliveriedOrder() {
       filterable: false,
       valueFormatter: (params) => {
         const date = new Date(params.value);
-        return date.toLocaleDateString("en-US");
+        return format(date, "dd/MM/yyyy HH:mm");
       },
     },
     {
@@ -73,7 +73,7 @@ export default function DeliveriedOrder() {
           <>
             <Button
               variant="contained"
-              color="success"
+              color="info"
               onClick={() => {
                 navigate(`/admin/orders/view_detail/${order.orderId}`, {
                   state: order,

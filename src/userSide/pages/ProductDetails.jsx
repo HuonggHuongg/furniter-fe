@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { getDetailService } from "../../services/productService";
 import { getProductDetailFeedBackService } from "../../services/feedBackServices";
 import { USD } from "../../utils/convertMoney";
+import ErrorPage from "../ErrorPage/ErrorPage";
 
 const ProductDetails = () => {
   const currentUser =
@@ -25,6 +26,7 @@ const ProductDetails = () => {
   const [countAddCart, setCountAddCart] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingCart, setLoadingCart] = useState(false);
+  const [errorStatus, setErrorStatus] = useState("");
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -32,6 +34,7 @@ const ProductDetails = () => {
     const fetchDetailProductApi = async () => {
       setLoading(true);
       const responeProduct = await getDetailService(id);
+      setErrorStatus(responeProduct.response?.status || responeProduct?.status);
       const responeFeedBack = await getProductDetailFeedBackService(id);
       const productDetail = {
         name: responeProduct.data.productName,
@@ -47,8 +50,9 @@ const ProductDetails = () => {
     };
     fetchDetailProductApi();
   }, [id]);
+  console.log(errorStatus);
   const [avgRatings, setAvgRatings] = useState();
-  const [star,setStar] = useState();
+  const [star, setStar] = useState();
   useEffect(() => {
     console.log(productDetail?.feedBack);
     const totalRating = productDetail?.feedBack
@@ -63,8 +67,8 @@ const ProductDetails = () => {
         : 0;
     setAvgRatings(avgRating);
 
-    const fullStars = Math.floor(avgRating); 
-    const hasHalfStar = avgRating % 1 !== 0; 
+    const fullStars = Math.floor(avgRating);
+    const hasHalfStar = avgRating % 1 !== 0;
 
     const stars = [];
     for (let i = 0; i < fullStars; i++) {
@@ -125,235 +129,245 @@ const ProductDetails = () => {
   }, [productDetail]);
 
   return (
-    <Helmet title={productDetail.name}>
-      {loadingCart ? (
-        <Progress animated value="100" className="progress"></Progress>
-      ) : (
-        ""
-      )}
-      <CommonSection title={productDetail.name} />
-      {loading === true ? (
-        <div className="loading--api">
-          <Spinner animation="grow" variant="success" />
-        </div>
-      ) : (
-        <>
-          <section>
-            <Container>
-              <Row>
-                <Col lg="6">
-                  <img src={productDetail.image} alt="" />
-                </Col>
-                <Col>
-                  <div className="product__details">
-                    <h2>{productDetail.name}</h2>
-                    <div className="product__rating d-flex align-items-center gap-5 mb-3">
-                      <div style={{color:"#FFC107"}}>
-                        {star}
-                      </div>
-                      <p>
-                        {avgRatings !== 0 ? (
-                          <div>
-                             <span>{avgRatings} ratings </span>
-                            <span className="text-dark">({productDetail?.feedBack?.length} reviews)</span>
-                          </div>
-                        ) : (
-                          <div>No reviews yet</div>
-                        )}
-                      </p>
-                    </div>
-                    <div className="d-flex align-items-center gap-5">
-                      <span className="product__price">
-                        {USD.format(productDetail.price)}
-                      </span>
-                      <span>
-                        Category:{" "}
-                        {productDetail.category
-                          ? productDetail.category.toUpperCase()
-                          : ""}
-                      </span>
-                    </div>
-                    <p className="mt-3">{productDetail.description}</p>
-                    <div className="d-flex mt-3">
-                      <div
-                        className={
-                          productDetail.inventoryQuantity === 0
-                            ? "d-none"
-                            : "btn--group__addCart mr-2"
-                        }
-                      >
-                        <button
-                          className="btn--sub__addCart"
-                          onClick={() => {
-                            let count =
-                              countAddCart === 1 ? 1 : countAddCart - 1;
-                            setCountAddCart(count);
-                          }}
-                        >
-                          <i className="ri-subtract-fill"></i>
-                        </button>
+    <>
+      {errorStatus === 200 && (
+        <Helmet title={productDetail.name}>
+          {loadingCart ? (
+            <Progress animated value="100" className="progress"></Progress>
+          ) : (
+            ""
+          )}
+          <CommonSection title={productDetail.name} />
+          {loading === true ? (
+            <div className="loading--api">
+              <Spinner animation="grow" variant="success" />
+            </div>
+          ) : (
+            <>
+              <section>
+                <Container>
+                  <Row>
+                    <Col lg="6">
+                      <img src={productDetail.image} alt="" />
+                    </Col>
+                    <Col>
+                      <div className="product__details">
+                        <h2>{productDetail.name}</h2>
+                        <div className="product__rating d-flex align-items-center gap-5 mb-3">
+                          <div style={{ color: "#FFC107" }}>{star}</div>
+                          <p>
+                            {avgRatings !== 0 ? (
+                              <div>
+                                <span>{avgRatings?.toFixed(1)} ratings </span>
+                                <span className="text-dark">
+                                  ({productDetail?.feedBack?.length} reviews)
+                                </span>
+                              </div>
+                            ) : (
+                              <div>No reviews yet</div>
+                            )}
+                          </p>
+                        </div>
+                        <div className="d-flex align-items-center gap-5">
+                          <span className="product__price">
+                            {USD.format(productDetail.price)}
+                          </span>
+                          <span>
+                            Category:{" "}
+                            {productDetail.category
+                              ? productDetail.category.toUpperCase()
+                              : ""}
+                          </span>
+                        </div>
+                        <p className="mt-3">{productDetail.description}</p>
+                        <div className="d-flex mt-3">
+                          <div
+                            className={
+                              productDetail.inventoryQuantity === 0
+                                ? "d-none"
+                                : "btn--group__addCart mr-2"
+                            }
+                          >
+                            <button
+                              className="btn--sub__addCart"
+                              onClick={() => {
+                                let count =
+                                  countAddCart === 1 ? 1 : countAddCart - 1;
+                                setCountAddCart(count);
+                              }}
+                            >
+                              <i className="ri-subtract-fill"></i>
+                            </button>
 
-                        <div className="btn--sub__count">
-                          <p>{countAddCart}</p>
+                            <div className="btn--sub__count">
+                              <p>{countAddCart}</p>
+                            </div>
+
+                            <button
+                              className="btn--sub__addCart"
+                              onClick={() => {
+                                let count =
+                                  countAddCart ===
+                                  productDetail.inventoryQuantity
+                                    ? countAddCart
+                                    : countAddCart + 1;
+                                setCountAddCart(count);
+                              }}
+                            >
+                              <i className="ri-add-fill"></i>
+                            </button>
+                          </div>
+                          {productDetail.inventoryQuantity > 0 ? (
+                            <p>
+                              {productDetail.inventoryQuantity} products are
+                              available
+                            </p>
+                          ) : (
+                            <p>Out of stock</p>
+                          )}
                         </div>
 
-                        <button
-                          className="btn--sub__addCart"
-                          onClick={() => {
-                            let count =
-                              countAddCart === productDetail.inventoryQuantity
-                                ? countAddCart
-                                : countAddCart + 1;
-                            setCountAddCart(count);
-                          }}
+                        <motion.button
+                          whileTap={{ scale: 1.2 }}
+                          disabled={productDetail.inventoryQuantity === 0}
+                          className={
+                            productDetail.inventoryQuantity === 0
+                              ? "buy__btn btn__addCart_disabled"
+                              : "buy__btn btn__addCart"
+                          }
+                          onClick={addToCart}
                         >
-                          <i className="ri-add-fill"></i>
-                        </button>
+                          Add to cart
+                        </motion.button>
                       </div>
-                      {productDetail.inventoryQuantity > 0 ? (
-                        <p>
-                          {productDetail.inventoryQuantity} products are
-                          available
-                        </p>
+                    </Col>
+                  </Row>
+                </Container>
+              </section>
+              <section>
+                <Container>
+                  <Row>
+                    <Col lg="12">
+                      <div className="tab__wrapper d-flex align-items-center gap-5">
+                        <h6
+                          className={`${tab === "desc" ? "active__tab" : ""}`}
+                          onClick={() => setTab("desc")}
+                        >
+                          Description
+                        </h6>
+                        <h6
+                          className={`${tab === "rev" ? "active__tab" : ""}`}
+                          onClick={() => setTab("rev")}
+                        >
+                          Reviews (
+                          {productDetail.feedBack
+                            ? productDetail.feedBack.length
+                            : ""}
+                          )
+                        </h6>
+                      </div>
+                      {tab === "desc" ? (
+                        <div className="tab__content mt-5">
+                          <p>{productDetail.description}</p>
+                        </div>
                       ) : (
-                        <p>Out of stock</p>
+                        <div className="product__review mt-5">
+                          <div className="review__wrapper">
+                            <ul>
+                              {productDetail.feedBack.map((item, index) => {
+                                console.log(item);
+                                return item?.user?.userName ===
+                                  currentUser?.userName ? (
+                                  <li key={index}>
+                                    <div className="user__comment__block">
+                                      <div>
+                                        {item.user?.avatar ? (
+                                          <img
+                                            className="avatarUser__comment"
+                                            src={item.user?.avatar}
+                                            alt="#"
+                                          />
+                                        ) : (
+                                          <img
+                                            className="avatarUser__comment"
+                                            src={user_icon}
+                                            alt="#"
+                                          />
+                                        )}
+                                      </div>
+                                      <div>
+                                        <h6>{item.user?.userName}</h6>
+
+                                        <span>
+                                          {item.rating} (average rating)
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <p>{item.commentText}</p>
+                                  </li>
+                                ) : (
+                                  <></>
+                                );
+                              })}
+                              {productDetail.feedBack.map((item, index) => {
+                                console.log(item);
+                                return item?.user?.userName !==
+                                  currentUser?.userName ? (
+                                  <li key={index}>
+                                    <div className="user__comment__block">
+                                      <div>
+                                        {item.user?.avatar ? (
+                                          <img
+                                            className="avatarUser__comment"
+                                            src={item.user?.avatar}
+                                            alt="#"
+                                          />
+                                        ) : (
+                                          <img
+                                            className="avatarUser__comment"
+                                            src={user_icon}
+                                            alt="#"
+                                          />
+                                        )}
+                                      </div>
+                                      <div>
+                                        <h6>{item.user?.userName}</h6>
+
+                                        <span>
+                                          {item.rating} (average rating)
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <p>{item.commentText}</p>
+                                  </li>
+                                ) : (
+                                  <></>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        </div>
                       )}
-                    </div>
-
-                    <motion.button
-                      whileTap={{ scale: 1.2 }}
-                      disabled={productDetail.inventoryQuantity === 0}
-                      className={
-                        productDetail.inventoryQuantity === 0
-                          ? "buy__btn btn__addCart_disabled"
-                          : "buy__btn btn__addCart"
-                      }
-                      onClick={addToCart}
-                    >
-                      Add to cart
-                    </motion.button>
-                  </div>
-                </Col>
-              </Row>
-            </Container>
-          </section>
-          <section>
-            <Container>
-              <Row>
-                <Col lg="12">
-                  <div className="tab__wrapper d-flex align-items-center gap-5">
-                    <h6
-                      className={`${tab === "desc" ? "active__tab" : ""}`}
-                      onClick={() => setTab("desc")}
-                    >
-                      Description
-                    </h6>
-                    <h6
-                      className={`${tab === "rev" ? "active__tab" : ""}`}
-                      onClick={() => setTab("rev")}
-                    >
-                      Reviews (
-                      {productDetail.feedBack
-                        ? productDetail.feedBack.length
-                        : ""}
-                      )
-                    </h6>
-                  </div>
-                  {tab === "desc" ? (
-                    <div className="tab__content mt-5">
-                      <p>{productDetail.description}</p>
-                    </div>
-                  ) : (
-                    <div className="product__review mt-5">
-                      <div className="review__wrapper">
-                        <ul>
-                          {productDetail.feedBack.map((item, index) => {
-                            console.log(item);
-                            return item?.user?.userName ===
-                              currentUser?.userName ? (
-                              <li key={index}>
-                                <div className="user__comment__block">
-                                  <div>
-                                    {item.user?.avatar ? (
-                                      <img
-                                        className="avatarUser__comment"
-                                        src={item.user?.avatar}
-                                        alt="#"
-                                      />
-                                    ) : (
-                                      <img
-                                        className="avatarUser__comment"
-                                        src={user_icon}
-                                        alt="#"
-                                      />
-                                    )}
-                                  </div>
-                                  <div>
-                                    <h6>{item.user?.userName}</h6>
-
-                                    <span>{item.rating} (average rating)</span>
-                                  </div>
-                                </div>
-
-                                <p>{item.commentText}</p>
-                              </li>
-                            ) : (
-                              <></>
-                            );
-                          })}
-                          {productDetail.feedBack.map((item, index) => {
-                            console.log(item);
-                            return item?.user?.userName !==
-                              currentUser?.userName ? (
-                              <li key={index}>
-                                <div className="user__comment__block">
-                                  <div>
-                                    {item.user?.avatar ? (
-                                      <img
-                                        className="avatarUser__comment"
-                                        src={item.user?.avatar}
-                                        alt="#"
-                                      />
-                                    ) : (
-                                      <img
-                                        className="avatarUser__comment"
-                                        src={user_icon}
-                                        alt="#"
-                                      />
-                                    )}
-                                  </div>
-                                  <div>
-                                    <h6>{item.user?.userName}</h6>
-
-                                    <span>{item.rating} (average rating)</span>
-                                  </div>
-                                </div>
-
-                                <p>{item.commentText}</p>
-                              </li>
-                            ) : (
-                              <></>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    </div>
-                  )}
-                </Col>
-                <Col lg="12" className="mt-5">
-                  <h2 className="related__title">You might also like</h2>
-                </Col>
-                {/* {productRecommend ? (
+                    </Col>
+                    <Col lg="12" className="mt-5">
+                      <h2 className="related__title">You might also like</h2>
+                    </Col>
+                    {/* {productRecommend ? (
                   <ProductsList data={productRecommend} />
                 ) : (
                   <></>
                 )} */}
-              </Row>
-            </Container>
-          </section>
-        </>
+                  </Row>
+                </Container>
+              </section>
+            </>
+          )}
+        </Helmet>
       )}
-    </Helmet>
+      {errorStatus !== 200 && <ErrorPage status={errorStatus} />}
+    </>
   );
 };
 

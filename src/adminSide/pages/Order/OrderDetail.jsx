@@ -136,8 +136,8 @@ export default function OrderDetail() {
             <div className="info_price--order">
               <h4>Totalize</h4>
               <p className="mt-2">
-                Subtotal({orderArray.length} product) :{" "}
-                {USD.format(order.totalOrder)}
+                Subtotal({orderArray?.length} product) :{" "}
+                {USD.format(order?.totalOrder)}
               </p>
             </div>
           </div>

@@ -6,9 +6,16 @@ import "./product.css";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { USD } from "../../../utils/convertMoney";
+import { Modal, ModalHeader, ModalBody } from "reactstrap";
+import { useState } from "react";
+import { format } from "date-fns";
 
 export default function Product() {
   const navigate = useNavigate();
+  const [modal, setModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const toggle = () => setModal(!modal);
+  console.log(selectedProduct);
 
   const listProduct = useSelector((state) => state.product.products);
 
@@ -43,7 +50,6 @@ export default function Product() {
       field: "price",
       headerName: "Price",
       width: 130,
-      // type: "number",
       valueFormatter: (params) => {
         return USD.format(params.value);
       },
@@ -84,6 +90,17 @@ export default function Product() {
             >
               Edit
             </Button>
+            <Button
+              variant="contained"
+              color="info"
+              sx={{ marginLeft: "4px" }}
+              onClick={() => {
+                setSelectedProduct(product);
+                setModal(true);
+              }}
+            >
+              Detail
+            </Button>
           </>
         );
       },
@@ -115,6 +132,61 @@ export default function Product() {
           getRowId={(row) => row.productId}
         />
       </div>
+      <Modal
+        size="lg"
+        style={{ marginRight: "10%" }}
+        zIndex={"1050"}
+        isOpen={modal}
+        toggle={toggle}
+      >
+        <ModalHeader toggle={toggle}>
+          {selectedProduct && selectedProduct?.productName}
+        </ModalHeader>
+        <ModalBody>
+          <div className="form__rating d-flex align-items-center gap-3">
+            {selectedProduct && (
+              <>
+                {console.log(selectedProduct)}
+                <div className="row">
+                  <div className="col-5">
+                    <img src={selectedProduct?.image} alt="" />
+                    <div className="ps-4">
+                      <p>
+                        Category:{" "}
+                        <strong>
+                          {selectedProduct?.category?.categoryName}
+                        </strong>
+                      </p>
+                      <p>
+                        Quantity:{" "}
+                        <strong>{selectedProduct?.inventoryQuantity}</strong>
+                      </p>
+                      <p>
+                        Price:{" "}
+                        <strong>{USD.format(selectedProduct?.price)}</strong>
+                      </p>
+                      <p>
+                        Created At:{" "}
+                        <strong>
+                          {format(
+                            new Date(selectedProduct?.createdAt),
+                            "dd/MM/yyyy HH:mm"
+                          )}
+                        </strong>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-7">
+                    <h5>{selectedProduct?.productName}</h5>
+                    <p>{selectedProduct?.description}</p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+          <div></div>
+        </ModalBody>
+      </Modal>
     </>
   );
 }

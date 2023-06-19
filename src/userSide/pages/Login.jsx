@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import Helmet from "../components/Helmet/Helmet";
 import { Container, Row, Col, Form, FormGroup, Progress } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "../styles/login.css";
-import { useFormik } from "formik";
+import { replace, useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,12 +13,15 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const currentUserInfor = useSelector((state) => state.user);
   const messageLogin = currentUserInfor.message;
+  const from = location.state?.from || "";
+  console.log(from);
 
   useEffect(() => {
     if (messageLogin === "Login successfully!") {
-      navigate("/home");
+      from ? navigate(from, { replace: true }) : navigate("/home");
       toast.success(messageLogin);
     }
 
@@ -78,7 +81,7 @@ const Login = () => {
                     name="password"
                     value={formik.values.password}
                     onChange={formik.handleChange}
-                    placeholder="Enter your passworld"
+                    placeholder="Enter your password"
                   />
                 </FormGroup>
                 <button className="buy__btn auth__btn">Login</button>

@@ -34,3 +34,21 @@ export const sendEmailSignUpSuccessService = async (dataSignup) => {
     throw error;
   }
 };
+
+export const sendOTPSignUpService = async (dataSignup,otp) => {
+  try {
+    return requestApi({
+      method: "post",
+      url: "email/send-otp",
+      data: {
+        "email":`${dataSignup.email}`,
+        "subject":"Account Verification",
+        "username":`${dataSignup.name}`,
+        "msgBody": `${otp}`
+      },
+      
+    });
+  } catch (error) {
+    throw error;
+  }
+};

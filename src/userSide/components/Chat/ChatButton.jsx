@@ -14,7 +14,7 @@ function ChatButton() {
                     onClick={() => setIsDialog(true)}
                     style={{ zIndex: "999" }}
                 >
-                    <i class="fa-regular fa-message"></i>
+                    <i className="fa-regular fa-message"></i>
                 </button>
             )}
             {isShowDialog && (

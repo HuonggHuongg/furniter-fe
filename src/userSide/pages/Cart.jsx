@@ -7,7 +7,10 @@ import CommonSection from "../components/UI/CommonSection";
 import { motion } from "framer-motion";
 import "../styles/cart.css";
 import { Link } from "react-router-dom";
-import { deleteCartItemApi, getAllCartItemApi } from "../../redux/slices/cartSlice";
+import {
+  deleteCartItemApi,
+  getAllCartItemApi,
+} from "../../redux/slices/cartSlice";
 import { toast } from "react-toastify";
 import { USD } from "../../utils/convertMoney";
 import { useEffect } from "react";
@@ -35,9 +38,10 @@ const Cart = () => {
     fetchRemoveProductFromCartApi();
   };
 
-  const updateQuantity = async(cartItemId, quantity) => {
-    updateQuantityCartItemService(quantity, cartItemId);
-    await dispatch(getAllCartItemApi());
+  const updateQuantity = async (cartItemId, quantity) => {
+    updateQuantityCartItemService(quantity, cartItemId).then(() =>
+      dispatch(getAllCartItemApi())
+    );
   };
 
   return (
@@ -59,9 +63,10 @@ const Cart = () => {
                   <thead>
                     <tr>
                       <th>Image</th>
-                      <th>Title</th>
+                      <th className="col-4">Title</th>
                       <th>Price</th>
                       <th>Qty</th>
+                      <th>Total</th>
                       <th>Delete</th>
                     </tr>
                   </thead>
@@ -126,14 +131,21 @@ const Tr = (props) => {
 
   useEffect(() => {
     onUpdateQuantity(item.cartItemId, quantity);
-  }, [item.cartItemId, quantity, onUpdateQuantity]);
+  }, [item.cartItemId, quantity]);
 
   return (
     <tr>
       <td>
-        <img src={item.product.image} alt="#" />
+        <Link to={`/shop/${item.product.productId}`}>
+          <img src={item.product.image} alt="#" />
+        </Link>
       </td>
-      <td>{item.product.productName}</td>
+
+      <td>
+        <Link to={`/shop/${item.product.productId}`}>
+          {item.product.productName}
+        </Link>
+      </td>
       <td>{item.product.price}</td>
 
       <td>
@@ -157,6 +169,7 @@ const Tr = (props) => {
           </button>
         </div>
       </td>
+      <td>{item.product.price*quantity}</td>
       <td>
         <motion.span
           whileTap={{ scale: 1.2 }}

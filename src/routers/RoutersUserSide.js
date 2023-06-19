@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useNavigate, Outlet } from "react-router-dom";
 
 import Home from "../userSide/pages/Home";
 import Shop from "../userSide/pages/Shop";
@@ -13,25 +13,45 @@ import Profile from "../userSide/pages/Profile/Profile";
 import ForgotPassword from "../userSide/pages/ForgotPassword";
 import ResetPassword from "../userSide/pages/ResetPassword";
 import Payment from "../userSide/pages/Payment";
+import ErrorPage from "../userSide/ErrorPage/ErrorPage";
+
+const PrivateRoute = () => {
+  const currentUser = JSON.parse(localStorage.getItem("currentUserInfor"));
+  return currentUser ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/login" state={{ from: window.location.pathname }} />
+  );
+};
+
 const Routers = () => {
   return (
-      <Routes>
-        <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="home" element={<Home />} />
-        <Route path="shop" element={<Shop />} />
-        <Route path="shop/:id" element={<ProductDetails />} />
+    <Routes>
+      <Route path="/" element={<Navigate to="/home" />} />
+      <Route path="home" element={<Home />} />
+      <Route path="shop" element={<Shop />} />
+      <Route path="shop/:id" element={<ProductDetails />} />
+      <Route path="login" element={<Login />} />
+      <Route path="signup" element={<Signup />} />
+      <Route path="forgot-password" element={<ForgotPassword />} />
+      <Route path="reset-password" element={<ResetPassword />} />
+      <Route exact path="/" element={<PrivateRoute />}>
         <Route path="cart" element={<Cart />} />
         <Route path="checkout" element={<Checkout />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
+        <Route path="payment" element={<Payment />} />
         <Route path="order" element={<Order />} />
-        <Route path="payment" element={<Payment/>}/>
         <Route path="order/:id" element={<OrderDetail />} />
         <Route path="profile" element={<Profile />} />
-        <Route path="forgot-password" element={<ForgotPassword/>}/>
-        <Route path="reset-password" element={<ResetPassword/>}/>
-        <Route path="*" element={<Home />} />
-      </Routes>
+      </Route>
+      <Route path="error" element={<ErrorPage />} />
+
+      {/* <PrivateRoute path="cart" element={<Cart />} />
+      <Route path="checkout" element={<Checkout />} />
+      <Route path="payment" element={<Payment />} />
+      <Route path="order" element={<Order />} />
+      <Route path="order/:id" element={<OrderDetail />} /> */}
+      <Route path="*" element={<Home />} />
+    </Routes>
   );
 };
 

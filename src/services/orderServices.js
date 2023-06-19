@@ -104,6 +104,7 @@ export const getDetailsOrderService = async (id) => {
     });
     return respone;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };

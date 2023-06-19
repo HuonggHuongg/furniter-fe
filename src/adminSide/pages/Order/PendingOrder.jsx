@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { changeStatusOrderApi } from "../../../redux/slices/orderPendingSlice";
 import { USD } from "../../../utils/convertMoney";
 import { Chip } from "@mui/material";
+import { format } from "date-fns";
 
 export default function PendingOrder() {
   const navigate = useNavigate();
@@ -89,11 +90,10 @@ export default function PendingOrder() {
       field: "createdAt",
       headerName: "Created at",
       width: 130,
-      sortable: false,
-      filterable: false,
       valueFormatter: (params) => {
         const date = new Date(params.value);
-        return date.toLocaleDateString("en-US");
+      
+        return format(date, "dd/MM/yyyy HH:mm");
       },
     },
 
@@ -120,7 +120,7 @@ export default function PendingOrder() {
             </Button>
             <Button
               variant="contained"
-              color="success"
+              color="info"
               sx={{ marginLeft: "5px" }}
               onClick={() => {
                 navigate(`/admin/orders/view_detail/${order.orderId}`, {

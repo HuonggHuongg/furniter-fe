@@ -20,7 +20,6 @@ const OrderCard = (props) => {
 
   const date = new Date(item.createdAt);
   const createAt =  format(date, "dd/MM/yyyy HH:mm");
-  console.log(item.createdAt)
   const navigate = useNavigate();
   const handleClick = () => {
     navigate(`/order/${item.orderId}`);
