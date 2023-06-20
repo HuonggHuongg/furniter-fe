@@ -15,6 +15,8 @@ import {
   signupServices,
 } from "../../services/signupService";
 import generateRandomCode from "../../utils/ramdomOTP";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -122,6 +124,8 @@ const Signup = () => {
       setOtpError("OTP is incorrect!!!");
     }
   };
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
     <Helmet title="Signup">
@@ -165,28 +169,53 @@ const Signup = () => {
                     )}
                   </FormGroup>
                   <FormGroup className="form__group">
-                    <input
-                      type="password"
-                      id="password"
-                      placeholder="Enter your password"
-                      value={formik.password}
-                      onChange={formik.handleChange}
-                    />
+                    <div className="password-input-wrapper">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        placeholder="Enter your password"
+                        value={formik.password}
+                        onChange={formik.handleChange}
+                      />
+                      <button
+                        type="button"
+                        className="password-toggle-btn"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        <FontAwesomeIcon
+                          icon={showPassword ? faEyeSlash : faEye}
+                          className="eye-icon"
+                        />
+                      </button>
+                    </div>
                     {formik.errors.password && (
                       <p className="errorMsg"> {formik.errors.password} </p>
                     )}
                   </FormGroup>
                   <FormGroup className="form__group">
-                    <input
-                      type="password"
-                      id="confirmedPassword"
-                      placeholder="Confirm your passworld"
-                      value={formik.values.confirmedPassword}
-                      onChange={formik.handleChange}
-                    />
+                    <div className="password-input-wrapper">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        id="confirmedPassword"
+                        placeholder="Confirm your passworld"
+                        value={formik.values.confirmedPassword}
+                        onChange={formik.handleChange}
+                      />
+                      <button
+                        type="button"
+                        className="password-toggle-btn"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        <FontAwesomeIcon
+                          icon={showConfirmPassword ? faEyeSlash : faEye}
+                          className="eye-icon"
+                        />
+                      </button>
+                    </div>
                     {formik.errors.confirmedPassword && (
                       <p className="errorMsg">
-                        {" "}
                         {formik.errors.confirmedPassword}{" "}
                       </p>
                     )}

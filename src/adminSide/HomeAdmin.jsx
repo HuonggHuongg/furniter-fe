@@ -18,6 +18,7 @@ import AdminChat from "./pages/Chat/AdminChat";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import InputCategory from "./pages/Category/InputCategory";
 import EditCategory from "./pages/Category/EditCategory";
+import ErrorPage from "../userSide/ErrorPage/ErrorPage";
 
 const HomeAdmin = () => {
   const mode = useSelector((state) => state.globalSlice.mode);

@@ -10,11 +10,16 @@ import {
 } from "../../../services/RevenueService";
 import { useState } from "react";
 import { USD } from "../../../utils/convertMoney";
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbar,
+  GridToolbarQuickFilter,
+} from "@mui/x-data-grid";
 import { Chip } from "@mui/material";
 import { Button, Menu, MenuItem } from "@mui/material";
 import { Download } from "@mui/icons-material";
 import ExportExcel from "./ExportExcel";
+import CustomToolbar from "./CustomToolbar";
 
 const OrderRecent = (props) => {
   const [orderRecentList, setOrderRecentList] = useState([]);
@@ -81,6 +86,7 @@ const OrderRecent = (props) => {
       field: "price",
       headerName: "Price",
       width: 100,
+      type: "number",
       valueFormatter: (params) => {
         return USD.format(params.value);
       },
@@ -90,6 +96,7 @@ const OrderRecent = (props) => {
       field: "quantity",
       headerName: "Quantity",
       width: 80,
+      type: "number",
       valueFormatter: (params) => {
         const inventoryQuantity = params.value;
         return inventoryQuantity;
@@ -100,6 +107,7 @@ const OrderRecent = (props) => {
       field: "amount",
       headerName: "Amount",
       width: 100,
+      type: "number",
       valueFormatter: (params) => {
         return USD.format(params.value);
       },
@@ -144,6 +152,7 @@ const OrderRecent = (props) => {
       field: "rating",
       headerName: "Rating",
       width: 80,
+      type: "number",
       renderCell: (params) => (
         <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}>
           {params.value} <i class="fa-solid fa-star text-warning"></i>
@@ -179,15 +188,12 @@ const OrderRecent = (props) => {
         >
           <MenuItem>
             {" "}
-            <ExportExcel
-              data={[orderRecentList]}
-              label={["Orders Recent"]}
-            />
+            <ExportExcel data={[orderRecentList]} label={["Orders Recent"]} />
           </MenuItem>
         </Menu>
       </div>
       <DataGrid
-        rowHeight={80}
+        rowHeight={100}
         rows={rows}
         columns={columns}
         pageSize={5}

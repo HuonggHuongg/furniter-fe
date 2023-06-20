@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { USD } from "../../../utils/convertMoney";
@@ -26,7 +26,7 @@ export default function DeliveriedOrder() {
       sortable: false,
       valueGetter: (params) => {
         return params.row.user.userName;
-      }
+      },
     },
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
@@ -101,6 +101,9 @@ export default function DeliveriedOrder() {
           checkboxSelection={false}
           disableSelectionOnClick
           getRowId={(row) => row.orderId}
+          components={{
+            Toolbar: GridToolbarQuickFilter,
+          }}
         />
       </div>
     </>

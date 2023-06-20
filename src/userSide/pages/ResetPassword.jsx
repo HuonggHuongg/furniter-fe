@@ -1,10 +1,12 @@
 import { useFormik } from "formik";
 import React, { useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Form, FormGroup } from "reactstrap";
 import * as Yup from "yup";
 import { resetPasswordService } from "../../services/loginServices";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 function ResetPassword() {
   const [error, setError] = useState();
@@ -13,6 +15,9 @@ function ResetPassword() {
   const [email] = useState(queryParams.get("email"));
   const [token] = useState(queryParams.get("token"));
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -58,29 +63,57 @@ function ResetPassword() {
         <h4 className="text-light mb-3">Please input new password!!</h4>
         {error?.length > 0 &&
           error.map((err) => {
-            return <div className="text-left text-danger mb-2">* {err.defaultMessage} </div>;
+            return (
+              <div className="text-left text-danger mb-2">
+                * {err.defaultMessage}{" "}
+              </div>
+            );
           })}
 
         <FormGroup className="form__group">
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            value={formik.password}
-            onChange={formik.handleChange}
-          />
+          <div className="password-input-wrapper">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              placeholder="Enter your password"
+              value={formik.password}
+              onChange={formik.handleChange}
+            />
+            <button
+              type="button"
+              className="password-toggle-btn"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              <FontAwesomeIcon
+                icon={showPassword ? faEyeSlash : faEye}
+                className="eye-icon"
+              />
+            </button>
+          </div>
           {formik.errors.password && (
             <p className="errorMsg"> {formik.errors.password} </p>
           )}
         </FormGroup>
         <FormGroup className="form__group">
-          <input
-            type="password"
-            id="confirmedPassword"
-            placeholder="Confirm your passworld"
-            value={formik.values.confirmedPassword}
-            onChange={formik.handleChange}
-          />
+          <div className="password-input-wrapper">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              id="confirmedPassword"
+              placeholder="Confirm your passworld"
+              value={formik.values.confirmedPassword}
+              onChange={formik.handleChange}
+            />
+            <button
+              type="button"
+              className="password-toggle-btn"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              <FontAwesomeIcon
+                icon={showConfirmPassword ? faEyeSlash : faEye}
+                className="eye-icon"
+              />
+            </button>
+          </div>
           {formik.errors.confirmedPassword && (
             <p className="errorMsg"> {formik.errors.confirmedPassword} </p>
           )}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Helmet from "../components/Helmet/Helmet";
 import { Container, Row, Col, Form, FormGroup, Progress } from "reactstrap";
 import { Link, useLocation } from "react-router-dom";
@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { userLoginApi } from "../../redux/slices/userSlice";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -57,6 +59,7 @@ const Login = () => {
 
     if (data !== undefined) fectLoginApi();
   };
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Helmet title="login">
@@ -76,13 +79,25 @@ const Login = () => {
                   />
                 </FormGroup>
                 <FormGroup className="form__group">
-                  <input
-                    type="password"
-                    name="password"
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    placeholder="Enter your password"
-                  />
+                  <div className="password-input-wrapper">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
+                      placeholder="Enter your password"
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle-btn"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <FontAwesomeIcon
+                        icon={showPassword ? faEyeSlash : faEye}
+                        className="eye-icon"
+                      />
+                    </button>
+                  </div>
                 </FormGroup>
                 <button className="buy__btn auth__btn">Login</button>
                 <p>

@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, GridToolbarFilterButton, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { changeStatusOrderApi } from "../../../redux/slices/orderPendingSlice";
@@ -14,31 +14,29 @@ export default function PendingOrder() {
 
   const orders = useSelector((state) => state.orderPendingSlice.listOrder);
   // const products = useSelector((state) => state.product.products);
-  console.log( "order",orders)
+  console.log("order", orders);
 
   const columns = [
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "orderId",
       headerName: "ID",
-      width: 30,
+      width: 70,
     },
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "username",
       headerName: "Username",
       width: 130,
-      sortable: false,
       valueGetter: (params) => {
         return params.row.user.userName;
-      }
+      },
     },
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "fullName",
       headerName: "Customer",
       width: 130,
-      sortable: false,
     },
 
     {
@@ -92,7 +90,7 @@ export default function PendingOrder() {
       width: 130,
       valueFormatter: (params) => {
         const date = new Date(params.value);
-      
+
         return format(date, "dd/MM/yyyy HH:mm");
       },
     },
@@ -106,7 +104,7 @@ export default function PendingOrder() {
       filterable: false,
       renderCell: (params) => {
         const order = params.row;
-        const {orderId} = order;
+        const { orderId } = order;
         return (
           <>
             <Button
@@ -149,6 +147,9 @@ export default function PendingOrder() {
           checkboxSelection={false}
           disableSelectionOnClick
           getRowId={(row) => row.orderId}
+          components={{
+            Toolbar: GridToolbarQuickFilter,
+          }}
         />
       </div>
     </>
