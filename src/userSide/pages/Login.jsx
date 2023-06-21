@@ -101,7 +101,7 @@ const Login = () => {
                 </FormGroup>
                 <button className="buy__btn auth__btn">Login</button>
                 <p>
-                  <Link to="/forgot-password">Forgotten password?</Link>
+                  <Link to="/forgot-password">Forgot password?</Link>
                 </p>
                 <p>
                   Don't have an account?

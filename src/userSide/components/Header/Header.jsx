@@ -14,8 +14,11 @@ import { useDispatch, useSelector } from "react-redux";
 import "./header.css";
 import logo from "../../../assets/images/eco-logo.png";
 import user_icon from "../../../assets/images/user-icon.png";
-import { LogoutApi } from "../../../redux/slices/userSlice";
-import { getAllCartItemApi,CartLogoutApi } from "../../../redux/slices/cartSlice";
+import { LogoutApi, userSlice } from "../../../redux/slices/userSlice";
+import {
+  getAllCartItemApi,
+  CartLogoutApi,
+} from "../../../redux/slices/cartSlice";
 
 const nav__links = [
   {
@@ -37,9 +40,11 @@ const nav__links = [
 ];
 
 const Header = () => {
+  const currentUserSlice = useSelector((state) => state.user.currentUser);
+  console.log(currentUserSlice);
   const currentUserInfor = JSON.parse(localStorage.getItem("currentUserInfor"));
   const currentUser = currentUserInfor ? currentUserInfor.currentUser : null;
-  const userAvatar = currentUser?.avatar ? currentUser.avatar : user_icon;
+  const userAvatar =  currentUser?.avatar || user_icon;
   const userName = currentUser ? currentUser.userName : "";
   const menuRef = useRef(null);
 
@@ -101,7 +106,7 @@ const Header = () => {
                   })}
                 {currentUser === null &&
                   nav__links.map((item, index) => {
-                    return (item.path !== "cart" && item.path !== "order" ) ? (
+                    return item.path !== "cart" && item.path !== "order" ? (
                       <li className="nav__item" key={index}>
                         <NavLink
                           to={item.path}
@@ -116,7 +121,6 @@ const Header = () => {
                       <li style={{ display: "none" }} key={index}></li>
                     );
                   })}
-                  
               </ul>
             </div>
 

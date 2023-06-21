@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { getDetailsOrderService } from "../../../services/orderServices";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./order.css";
 import { USD } from "../../../utils/convertMoney";
 import ErrorPage from "../../../userSide/ErrorPage/ErrorPage";
 
 export default function OrderDetail() {
   const [orderArray, setOrderArray] = useState([]);
+  const { idOrder } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
+  const [status, setStatus] = useState();
   const order = state;
 
   useEffect(() => {
     const fetchGetAllOrderAnUserApi = async () => {
-      const respone = await getDetailsOrderService(state.orderId);
-      setOrderArray(respone.data);
+      getDetailsOrderService(idOrder).then((data) => {
+        console.log(data);
+        setStatus(data.status);
+        setOrderArray(data.data);
+      });
     };
     fetchGetAllOrderAnUserApi();
-  }, [state]);
+  }, [idOrder]);
 
   const columns = [
     {
@@ -145,7 +150,7 @@ export default function OrderDetail() {
           </div>
         </div>
       )}
-      {orderArray?.length === 0 && <ErrorPage status={204} />}
+      {status && status !== 200 && <ErrorPage status={status} />}
     </>
   );
 }

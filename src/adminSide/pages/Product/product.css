@@ -4,6 +4,12 @@
     border-radius:50%;
 }
 
+.img__avatar--admin{
+    width: 40px;
+    height: 40px;
+    border-radius:50%;
+}
+
 .css-x4ghuj-MuiDataGrid-roo .MuiDataGrid-row{
     min-height: 80px;
 }

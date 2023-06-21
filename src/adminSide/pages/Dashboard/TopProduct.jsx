@@ -62,7 +62,7 @@ const TopProduct = (props) => {
       field: "price",
       headerName: "Price",
       width: 80,
-      // type: "number",
+      type: "number",
       valueFormatter: (params) => {
         return USD.format(params.value);
       },
@@ -73,6 +73,7 @@ const TopProduct = (props) => {
       field: "quantity",
       headerName: "Quantity",
       width: 80,
+      type: "number",
       valueFormatter: (params) => {
         const inventoryQuantity = params.value;
         return inventoryQuantity;
@@ -83,12 +84,14 @@ const TopProduct = (props) => {
       field: "orders",
       headerName: "Orders",
       width: 60,
+      type: "number",
     },
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "revenue",
       headerName: "Revenue",
       width: 80,
+      type: "number",
       valueFormatter: (params) => {
         return USD.format(params.value);
       },
@@ -98,8 +101,7 @@ const TopProduct = (props) => {
   const rows = productList?.length > 0 ? productList : [];
 
   return (
-    <div style={{ height: "83vh", width: "100%" }}>
-      
+    <div style={{ height: "87vh", width: "100%" }}>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h5 className="fw-semibold ms-2 ">Best Selling Products</h5>
 

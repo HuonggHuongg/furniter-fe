@@ -5,15 +5,12 @@ import {
   query,
   orderByChild,
   equalTo,
-  getDatabase,
   get,
   onValue,
-  onChildAdded,
-  set,
   update,
 } from "firebase/database";
 
-import { useList, useObject } from "react-firebase-hooks/database";
+import { useObject } from "react-firebase-hooks/database";
 import { database, serverTimestamp } from "../../../utils/firebase.js";
 import "./chat.css";
 import { useRef } from "react";
@@ -24,8 +21,7 @@ const useAdminMessages = (username) => {
   const messagesRef = ref(database, "messages");
 
   useEffect(() => {
-    const db = getDatabase();
-    const adminMessagesRef = query(
+    const adminMessagesRef = query( 
       messagesRef,
       orderByChild("receiver"),
       equalTo(username)
@@ -68,8 +64,6 @@ const useAdminMessages = (username) => {
 };
 
 const UserChat = ({ onHideDialog }) => {
-  const messagesRef = ref(database, "messages");
-
   const [usernameSelected, setUsernameSelected] = useState();
   const user = JSON.parse(localStorage.getItem("currentUserInfor"))?.currentUser
     ?.userName;
@@ -129,7 +123,6 @@ const UserChat = ({ onHideDialog }) => {
   const messageListRef = useRef(null);
 
   useEffect(() => {
-    // Cuộn xuống dưới sau khi component render
     if (messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current?.scrollHeight;
     }
@@ -140,7 +133,6 @@ const UserChat = ({ onHideDialog }) => {
       const usersRef = ref(database, "users");
       const userRef = query(usersRef, equalTo(usernameSelected));
 
-      const db = getDatabase();
       get(userRef).then((snapshot) => {
         if (!snapshot.exists()) {
           const avatar =

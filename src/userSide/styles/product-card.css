@@ -32,7 +32,7 @@
     border-radius: 50px;
 }
 
-.product__price--percent-detail{
+.product__price--percent-detail {
     color: #fff;
     font-size: 12px;
     font-weight: 700;
@@ -41,7 +41,7 @@
     width: 100%;
 }
 
-.product__price--percent{
+.product__price--percent {
     left: -15px;
     position: absolute;
     top: -1px;
@@ -67,9 +67,25 @@
 
 
 .coming-soon-badge {
-    background-color: #0A1D37;
-    color: #ffffff;
+    /* background-color: #0A1D37; */
+    border: 1px solid #EE4D2D;
+    color: #EE4D2D;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 14px;
-  }
+}
+
+.product__name {
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    height: 3rem;
+}
+
+.product__img img{
+    height: 10rem ;
+}

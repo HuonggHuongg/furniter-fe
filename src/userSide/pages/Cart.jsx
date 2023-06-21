@@ -146,7 +146,7 @@ const Tr = (props) => {
           {item.product.productName}
         </Link>
       </td>
-      <td>{item.product.price}</td>
+      <td>{USD.format(item.product.price)}</td>
 
       <td>
         <div
@@ -169,7 +169,7 @@ const Tr = (props) => {
           </button>
         </div>
       </td>
-      <td>{item.product.price*quantity}</td>
+      <td>{USD.format(item.product.price*quantity)}</td>
       <td>
         <motion.span
           whileTap={{ scale: 1.2 }}

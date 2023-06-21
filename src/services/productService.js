@@ -13,6 +13,18 @@ export const getAllProductService = async () => {
   }
 };
 
+export const getAllProductByCategoryService = async (id) => {
+  try {
+    const respone = await requestApi({ 
+      method: "get",
+      url: `product/category/${id}`,
+    });
+    return respone;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const trendingProductByPeriodTime = async (start, end) => {
   try {
     const respone = await requestApi({
@@ -94,4 +106,6 @@ export const editProductService = (formData, id) => {
       'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS' 
     },
   });
+
+  
 };

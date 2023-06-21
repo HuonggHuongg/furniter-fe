@@ -126,7 +126,7 @@ export default function FormProduct(props) {
             <textarea
               className="form-control"
               id="exampleFormControlTextarea1"
-              rows="3"
+              rows="5"
               name="description"
               onChange={handleChange}
               value={values.description}

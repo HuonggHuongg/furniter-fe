@@ -1,31 +1,27 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
-import {
-  Col,
-  Row,
-  Card,
-  Form,
-  Button,
-  InputGroup,
-} from "@themesberg/react-bootstrap";
+import { Col, Row, Card, Form, Button } from "@themesberg/react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { editProfileService } from "../../../services/userService";
-import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
-import { useEffect } from "react";
-import { storage } from "../../../../src/utils/firebase";
+
 import ImageUpload from "../ImageUpload";
+import { getUserInfoApi } from "../../../redux/slices/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export const GeneralInfoForm = () => {
   const userLogin = JSON.parse(localStorage.getItem("currentUserInfor"));
   const token = JSON.parse(
     localStorage.getItem("currentUserInfor")
   ).accessToken;
-  const [uploadedImageURLs, setUploadedImageURLs] = useState("");
+  const [uploadedImageURLs, setUploadedImageURLs] = useState(
+    userLogin.currentUser?.avatar || ""
+  );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   console.log(userLogin.currentUser);
   const formik = useFormik({
     initialValues: {
@@ -47,8 +43,8 @@ export const GeneralInfoForm = () => {
         : "",
     },
     validationSchema: Yup.object({
-      firstName: Yup.string().required("Required"),
-      lastName: Yup.string().required("Required"),
+      // firstName: Yup.string().required("Required"),
+      // lastName: Yup.string().required("Required"),
       phoneNumber: Yup.string()
         .required("Required")
         .matches(/^0[1-9][0-9]{8}$/, "Must be a valid phone number"),
@@ -75,6 +71,7 @@ export const GeneralInfoForm = () => {
             "currentUserInfor",
             JSON.stringify({ ...local, currentUser: data })
           );
+          dispatch(getUserInfoApi());
         })
         .catch((error) => {
           console.log(error);
@@ -91,12 +88,20 @@ export const GeneralInfoForm = () => {
   console.log("values", values);
   return (
     <Card border="light" className="bg-white shadow-sm mb-4">
+      <button
+        type="submit"
+        className="col-1 ms-3 btn btn-outline-dark"
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
+        Go Back
+      </button>
       <Card.Body>
-        <h5 className="mb-4">General information</h5>
-
         <Form onSubmit={handleSubmit}>
           <Row>
             <Col md={8}>
+              <h5 className="mb-4">General information</h5>
               <Row>
                 <Col md={6} className="mb-3">
                   <Form.Group id="firstName">
@@ -109,9 +114,6 @@ export const GeneralInfoForm = () => {
                       onChange={handleChange}
                     />
                   </Form.Group>
-                  {errors.firstName && touched.firstName ? (
-                    <p className="errorMsg text-danger"> {errors.firstName} </p>
-                  ) : null}
                 </Col>
                 <Col md={6} className="mb-3">
                   <Form.Group id="lastName">
@@ -143,7 +145,7 @@ export const GeneralInfoForm = () => {
                 </Col>
                 <Col md={6} className="mb-3">
                   <Form.Group id="phone">
-                    <Form.Label>Phone</Form.Label>
+                    <Form.Label>Phone<strong className="text-danger">*</strong></Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="+12-345 678 910"
@@ -151,6 +153,11 @@ export const GeneralInfoForm = () => {
                       name="phoneNumber"
                       onChange={handleChange}
                     />
+                    {errors.phoneNumber && touched.phoneNumber ? (
+                      <p className="errorMsg text-danger">
+                        {errors.phoneNumber}{" "}
+                      </p>
+                    ) : null}
                   </Form.Group>
                 </Col>
               </Row>

@@ -69,7 +69,7 @@ const ExportExcel = ({ data, label }) => {
     const blob = new Blob([buffer], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
-    saveAs(blob, "data.xlsx");
+    saveAs(blob, "report.xlsx");
   };
 
   return (

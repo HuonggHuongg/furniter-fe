@@ -25,7 +25,7 @@ export const uploadAvatarService = (idUser,formData) => {
     method: "put",
     url: `user/upload-avatar/${idUser}`,
     headers: {
-      Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
+      Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
     },
     data:formData
   });
@@ -33,12 +33,12 @@ export const uploadAvatarService = (idUser,formData) => {
 
 
 export const getInforUserService = () => {
+  const username= JSON.parse(localStorage.getItem("currentUserInfor")).currentUser.userName;
   return requestApi({
     method: "get",
-    url: `user/get_infor`,
+    url: `user/${username}`,
     headers: {
-      Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
+      Authorization: "Bearer " + JSON.parse(localStorage.getItem("currentUserInfor")).accessToken,
     },
-  
   });
 };

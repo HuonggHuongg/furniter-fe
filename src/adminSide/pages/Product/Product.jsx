@@ -1,6 +1,6 @@
 import React from "react";
 
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import "./product.css";
 import Button from "@mui/material/Button";
@@ -18,8 +18,14 @@ export default function Product() {
   console.log(selectedProduct);
 
   const listProduct = useSelector((state) => state.product.products);
-
-  console.log(listProduct);
+  const sortList = listProduct
+    ? listProduct?.slice().sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateB - dateA;
+      })
+    : [];
+  console.log(sortList);
 
   const columns = [
     {
@@ -107,7 +113,7 @@ export default function Product() {
     },
   ];
 
-  const rows = listProduct.length > 0 ? listProduct : [];
+  const rows = sortList.length > 0 ? sortList : [];
 
   return (
     <>
@@ -130,6 +136,9 @@ export default function Product() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           getRowId={(row) => row.productId}
+          components={{
+            Toolbar: GridToolbarQuickFilter,
+          }}
         />
       </div>
       <Modal

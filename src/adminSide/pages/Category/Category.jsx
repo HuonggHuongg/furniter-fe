@@ -13,11 +13,24 @@ import {
   updateCategoryServices,
 } from "../../../services/categoryServices";
 import { getAllCategoryApi } from "../../../redux/slices/categorySlice";
+import { getAllProductByCategoryService } from "../../../services/productService";
+import { USD } from "../../../utils/convertMoney";
 
 export default function Category() {
   const listCategory = useSelector((state) => state.categorySlice.categories);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+  const [productList, setProductList] = useState([]);
+  const handleViewProducts = (category) => {
+    const fetchProductsByCategory = () => {
+      if (category) {
+        getAllProductByCategoryService(category.categoryId).then((data) =>
+          setProductList(data.data)
+        );
+      }
+    };
+    fetchProductsByCategory();
+  };
+  console.log(productList);
   const columns = [
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
@@ -54,6 +67,17 @@ export default function Category() {
             >
               Edit
             </Button>
+            <Button
+              variant="contained"
+              color="info"
+              sx={{ marginLeft: "4px" }}
+              onClick={() => {
+                handleViewProducts(category);
+                setModalView(true);
+              }}
+            >
+              View Products
+            </Button>
           </>
         );
       },
@@ -62,9 +86,11 @@ export default function Category() {
 
   const rows = listCategory.length > 0 ? listCategory : [];
   const [modal, setModal] = useState(false);
+  const [modalView, setModalView] = useState(false);
   const [errors, setErrors] = useState();
 
   const toggle = () => setModal(!modal);
+  const toggleView = () => setModalView(!modalView);
 
   const initialValues = {
     categoryName: selectedCategory?.categoryName
@@ -146,6 +172,40 @@ export default function Category() {
                 setErrors("");
               }}
             ></FormCategory>
+          </div>
+        </ModalBody>
+      </Modal>
+      <Modal isOpen={modalView} toggle={toggleView}>
+        <ModalHeader toggle={toggleView}>Product List</ModalHeader>
+        <ModalBody>
+          <div className="form__rating d-flex align-items-center gap-3">
+            {productList && (
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Product name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                  </tr>
+                </thead>
+
+                {productList.map((product) => {
+                  return (
+                    <tbody>
+                      <tr>
+                        <th scope="row">{product.productId}</th>
+                        <td><img src={product.image} alt=""></img></td>
+                        <td>{product.productName}</td>
+                        <td>{USD.format(product.price)}</td>
+                        <td>{product.inventoryQuantity}</td>
+                      </tr>
+                    </tbody>
+                  );
+                })}
+              </table>
+            )}
           </div>
         </ModalBody>
       </Modal>

@@ -69,7 +69,7 @@ const subNavItemOrder = [
     url: "pending",
   },
   {
-    text: "Deliveried",
+    text: "Delivered",
     icon: <DeliveryDiningOutlinedIcon />,
     url: "deliveried",
   },

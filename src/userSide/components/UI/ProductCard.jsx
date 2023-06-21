@@ -29,7 +29,7 @@ const ProductCard = (props) => {
             <span className="price">{USD.format(item.price)}</span>
           </div>
           {item.inventoryQuantity === 0 ? (
-            <span className="badge-secondary rounded p-1 coming-soon-badge">Coming soon</span>
+            <span className=" rounded p-1 coming-soon-badge">Coming soon</span>
           ) : (
             <div className=""></div>
           )}

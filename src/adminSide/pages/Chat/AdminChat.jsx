@@ -66,7 +66,6 @@ function convertTimestampToTime(timestamp) {
   const date = new Date(timestamp);
   const currentDate = new Date();
 
-  // Kiểm tra nếu timestamp là ngày hôm nay
   if (
     date.getDate() === currentDate.getDate() &&
     date.getMonth() === currentDate.getMonth() &&
@@ -77,19 +76,12 @@ function convertTimestampToTime(timestamp) {
     if (minutes < 10) {
       minutes = "0" + minutes;
     }
-
-    // Định dạng kiểu giờ (24 giờ)
     const formattedTime = `${hours}:${minutes}`;
-
     return formattedTime;
   } else {
-    // Nếu timestamp không phải là ngày hôm nay, hiển thị ngày
     const day = date.getDate();
-    const month = date.getMonth() + 1; // Lưu ý: Tháng bắt đầu từ 0
-
-    // Định dạng ngày (vd: 14/06/2023)
+    const month = date.getMonth() + 1; 
     const formattedDate = `${day}/${month}`;
-
     return formattedDate;
   }
 }

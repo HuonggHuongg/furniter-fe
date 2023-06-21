@@ -366,7 +366,7 @@ const ProductDetails = () => {
           )}
         </Helmet>
       )}
-      {errorStatus !== 200 && <ErrorPage status={errorStatus} />}
+      {errorStatus && errorStatus !== 200 && <ErrorPage status={errorStatus} />}
     </>
   );
 };

@@ -16,7 +16,7 @@ const Shop = () => {
   const [productsData, setProductsData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterValue, setFilterValue] = useState("");
-  const [sortValue, setSortValue] = useState("all");
+  const [sortValue, setSortValue] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [categories, setCategories] = useState();
   

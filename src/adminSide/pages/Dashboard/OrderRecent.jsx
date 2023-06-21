@@ -1,25 +1,18 @@
 // ** MUI Imports
-
-import { styled } from "@mui/material/styles";
-
-import MuiDivider from "@mui/material/Divider";
 import { useEffect } from "react";
 import {
   orderRecentByPeriodTime,
-  topProductByPeriodTime,
 } from "../../../services/RevenueService";
 import { useState } from "react";
 import { USD } from "../../../utils/convertMoney";
 import {
   DataGrid,
-  GridToolbar,
-  GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import { Chip } from "@mui/material";
 import { Button, Menu, MenuItem } from "@mui/material";
 import { Download } from "@mui/icons-material";
 import ExportExcel from "./ExportExcel";
-import CustomToolbar from "./CustomToolbar";
+import user_icon from "../../../adminSide/assets/avatar_user.png";
 
 const OrderRecent = (props) => {
   const [orderRecentList, setOrderRecentList] = useState([]);
@@ -62,7 +55,7 @@ const OrderRecent = (props) => {
           <img
             style={{ width: "40px", height: "40px", borderRadius: "50%" }}
             className="img__product--admin me-2"
-            src={params.row.avatar}
+            src={params.row.avatar || user_icon} 
             alt="product"
           />
           <strong>{params.row.username}</strong>
@@ -73,7 +66,7 @@ const OrderRecent = (props) => {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "productName",
       headerName: "Product Name",
-      width: 250,
+      width: 200,
       renderCell: (params) => (
         <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}>
           {params.value}
@@ -119,7 +112,7 @@ const OrderRecent = (props) => {
       width: 80,
       renderCell: (params) => (
         <div>
-          {params.value === "1" && (
+          {params.value ==="false" && (
             <Chip
               label="Unpaid"
               color="warning"
@@ -131,7 +124,7 @@ const OrderRecent = (props) => {
               }}
             />
           )}
-          {params.value === "2" && (
+          {params.value === "true"  && (
             <Chip
               label="Paid"
               color="info"
@@ -151,11 +144,16 @@ const OrderRecent = (props) => {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
       field: "rating",
       headerName: "Rating",
-      width: 80,
+      width: 100,
       type: "number",
       renderCell: (params) => (
         <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}>
-          {params.value} <i class="fa-solid fa-star text-warning"></i>
+          {params.value}{" "}
+          {params.value ? (
+            <i class="fa-solid fa-star text-warning"></i>
+          ) : (
+            <>no  review</>
+          )}
         </div>
       ),
     },
@@ -164,9 +162,9 @@ const OrderRecent = (props) => {
   const rows = orderRecentList?.length > 0 ? orderRecentList : [];
 
   return (
-    <div style={{ height: "83vh", width: "100%" }}>
+    <div style={{ height: "100vh", width: "100%" }}>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h5 className="fw-semibold ms-2 ">Orders Recent</h5>
+        <h5 className="fw-semibold ms-2 ">Recent Orders </h5>
 
         <Button
           onClick={handleClick}

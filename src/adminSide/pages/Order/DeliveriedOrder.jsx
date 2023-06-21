@@ -33,7 +33,6 @@ export default function DeliveriedOrder() {
       field: "fullName",
       headerName: "Customer",
       width: 150,
-      sortable: false,
     },
 
     {
@@ -41,8 +40,6 @@ export default function DeliveriedOrder() {
       field: "totalOrder",
       headerName: "Total price",
       width: 130,
-      sortable: false,
-      filterable: false,
       valueFormatter: (params) => {
         return USD.format(params.value);
       },
@@ -52,8 +49,6 @@ export default function DeliveriedOrder() {
       field: "createdAt",
       headerName: "Created at",
       width: 130,
-      sortable: false,
-      filterable: false,
       valueFormatter: (params) => {
         const date = new Date(params.value);
         return format(date, "dd/MM/yyyy HH:mm");

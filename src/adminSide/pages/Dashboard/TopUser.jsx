@@ -6,6 +6,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button, Menu, MenuItem } from "@mui/material";
 import { Download } from "@mui/icons-material";
 import ExportExcel from "./ExportExcel";
+import user_icon from "../../../adminSide/assets/avatar_user.png";
 
 const TopUser = (props) => {
   const [userList, setUserList] = useState([]);
@@ -37,7 +38,11 @@ const TopUser = (props) => {
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <img className="img__product--admin" src={params.value} alt="product" />
+        <img
+          className="img__avatar--admin"
+          src={params.value || user_icon}
+          alt="product"
+        />
       ),
     },
     {
@@ -54,17 +59,6 @@ const TopUser = (props) => {
         </div>
       ),
     },
-    // {
-    //   renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
-    //   field: "fullname",
-    //   headerName: "Full name",
-    //   width: 120,
-    //   renderCell: (params) => (
-    //     <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.2 }}>
-    //       {params.row.firstName} {params.row.lastName}
-    //     </div>
-    //   ),
-    // },
 
     {
       renderHeader: (params) => <strong>{params.colDef.headerName} </strong>,
@@ -87,9 +81,9 @@ const TopUser = (props) => {
   const rows = userList?.length > 0 ? userList : [];
 
   return (
-    <div style={{ height: "83vh", width: "100%" }}>
+    <div style={{ height: "87vh", width: "100%" }}>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h5 className="fw-semibold ms-2 ">Best Selling Products</h5>
+        <h5 className="fw-semibold ms-2 ">Top Users</h5>
 
         <Button
           onClick={handleClick}

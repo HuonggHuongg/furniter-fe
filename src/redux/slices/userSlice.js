@@ -30,6 +30,9 @@ export const userSlice = createSlice({
         state.userRoles = action.payload.userRoles;
         state.message = "Login successfully!";
       })
+      .addCase(getUserInfoApi.fulfilled, (state, action) => {
+        state.currentUser = action.payload;
+      })
       .addCase(userLoginApi.rejected, (state) => {
         state.status = "idle";
         state.message = "Login fail!";
@@ -98,3 +101,11 @@ export const uploadAvatarApi = (idUser, formData) => {
     }
   };
 };
+
+export const getUserInfoApi = createAsyncThunk(
+  "user/getUserInfo", 
+  async () => {
+    const respone = await getInforUserService();
+    console.log(respone);
+    return respone.data;
+});
